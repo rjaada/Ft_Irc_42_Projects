@@ -21,6 +21,7 @@
 # include <sys/socket.h>
 # include <unistd.h>
 # include <string>
+# include <fcntl.h>
 
 class server
 {

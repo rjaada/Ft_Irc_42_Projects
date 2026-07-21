@@ -19,13 +19,13 @@ server::server()
 server::server(int port, std::string password) : port(port), password(password)
 {
 	this->serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-
+	
+	fcntl(serverSocket, F_SETFL, O_NONBLOCK);
+	
 	serverAdress.sin_family = AF_INET;
 	serverAdress.sin_port = htons(this->port);
 	serverAdress.sin_addr.s_addr = inet_addr("127.0.0.1");
-
 	bind(serverSocket, (struct sockaddr *)&serverAdress, sizeof(serverAdress));
-
 	listen(serverSocket, 5);
 
 	fds[0].fd = serverSocket;
@@ -70,6 +70,7 @@ void server::run()
 				if (this->fds[i].fd == this->serverSocket)
 				{
 					int newClient = accept(this->serverSocket, NULL, NULL);
+					fcntl(newClient, F_SETFL, O_NONBLOCK);
 					this->fds[nfds].fd = newClient;
 					this->fds[nfds].events = POLLIN;
 					this->nfds++;
