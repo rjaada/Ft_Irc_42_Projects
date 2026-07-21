@@ -10,6 +10,7 @@
 
 //#include <cctype>
 #include <cstdlib>
+#include "server.hpp"
 
 static void		handleSignal(int signal)
 {
@@ -60,8 +61,10 @@ int main(int ac, char **av)
 		signal(SIGQUIT, handleSignal);
 		std::cout << "\nPort number: " << port << "\nPassword: " << pass << "\n"<< std::endl;
 		argChecker(av);
-		//server starts here
 		std::cout << "All args are valid, server starts here." << std::endl;
+		int portNum = atoi(av[1]);
+		server irc(portNum, pass);
+		irc.run();
 	}
 	catch (const std::exception &e)
 	{

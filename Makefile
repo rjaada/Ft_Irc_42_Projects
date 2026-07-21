@@ -3,13 +3,13 @@ NAME = ircserv
 SRC_DIR = ./Srcs/
 OBJ_DIR = obj/
 SRC =	main.cpp\
-#		server.cpp\
+		server.cpp\
 #		client.cpp\
 
 OBJS	= $(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -g -std=c++98
+CFLAGS = -Wall -Wextra -Werror -g -std=c++98 -IIncludes
 RM = rm -f
 
 $(OBJ_DIR)%.o:	$(SRC_DIR)%.cpp
