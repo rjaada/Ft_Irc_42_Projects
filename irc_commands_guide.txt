@@ -1,0 +1,609 @@
+Registration, commands and its paramenters (most taken from the rfc 1459)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-Clients
+
+Each client is distinguished from other clients by a unique nickname having a maximum length of nine (9) characters
+all servers must have the following information about all clients: the real name of the host that the client is running on, the username of the client on that host, and the server to which the client is connected.
+------------------------------------------------------------------------------
+
+   
+-Operators
+
+They are allowed to perform general maintenance functions on the network.
+A more controversial power of operators is the abilit to remove a user from the connected network by 'force', i.e. operators are able to close the connection between any client and server.
+
+(Rosa: need more info!)
+------------------------------------------------------------------------------
+
+  
+-Messages:
+
+Servers and clients send eachother messages which may or may not generate a reply. If the message contains a valid command, as described in later sections, the client should expect a reply(look up replies).
+
+Each IRC message may consist of up to three main parts: the prefix (optional), the command, and the command parameters. The prefix, command, and all parameters are separated by one (or more) ASCII space character(s).
+
+The presence of a prefix is indicated with a single leading ASCII colon character (':'), which must be the first character of the message itself. There must be no gap (whitespace) between the colon and the prefix.
+
+Two characters are used as message separators: CR (carriage return or \r) and LF (line feed or \n). The message is parsed into the components <prefix>, <command> and list of parameters.
+
+(Rosa: need more info!!)
+------------------------------------------------------------------------------
+
+
+-Channels
+
+A channel is a named group of one or more clients which will all receive messages addressed to that channel. The channel is created implicitly when the first client joins it, and the channel ceases to exist when the last client leaves it.  While channel exists, any client can reference the channel using the name of the channel.
+   
+Channels names are strings (beginning with a '&' or '#' character) of length up to 200 characters. Apart from the the requirement that the first character being either '&' or '#'; the only restriction on a channel name is that it may not contain any spaces (' '), a control G (^G or ASCII 7), or a comma (',' which is used as a list item
+separator by the protocol).
+
+(need more info!)
+------------------------------------------------------------------------------
+
+
+-Connection registration:
+
+The commands described here are used to register a connection with an IRC server as either a user or a server as well as correctly disconnect.
+
+A "PASS" command is not required for either client or server connection to be registered, but it must precede the server message or the latter of the NICK/USER combination. It is strongly recommended that all server connections have a password in order to give some level of security to the actual connections. The recommended order for a client to register is as follows:
+
+           1. Pass message
+           2. Nick message
+           3. User message
+
+(Rosa: idk if this applies to the project)       
+------------------------------------------------------------------------------
+
+
+PASS <password>
+
+The PASS command is used to set a 'connection password'. The password can and must be set before any attempt to register the connection is made.
+
+Currently this requires that clients send a PASS command before sending the NICK/USER combination and servers *must* send a PASS command before any SERVER command. 
+
+(Rosa: check if this is necesarry or different from passing the password parameter to the ./ircserv ?, idk)
+
+-Numeric Replies:
+
+461     ERR_NEEDMOREPARAMS
+	"<command> :Not enough parameters"
+                        
+                        
+462     ERR_ALREADYREGISTRED
+	":You may not reregister"
+           
+-Example:
+
+	PASS secretpasswordhere       
+------------------------------------------------------------------------------
+
+
+NICK <nickname>
+
+Is used to give user a nickname or change the previous one. If a NICK message arrives at a server which already knows about an identical nickname for another client, a nickname collision occurs. As a result of a nickname collision, all instances of the nickname are removed from the server's database, and a KILL command is issued to remove the nickname from all other server's database. If the NICK message causing the collision was a nickname change, then the original (old) nick must be removed as well.
+
+If the server recieves an identical NICK from a client which is directly connected, it may issue an ERR_NICKCOLLISION to the local client, drop the NICK command, and not generate any kills.
+
+-Numeric Replies:
+
+431     ERR_NONICKNAMEGIVEN
+	":No nickname given"
+           
+                      
+432     ERR_ERRONEUSNICKNAME
+	"<nick> :Erroneus nickname"
+                        
+                        
+433     ERR_NICKNAMEINUSE
+	"<nick> :Nickname is already in use"
+                        
+                        
+436     ERR_NICKCOLLISION
+	"<nick> :Nickname collision KILL"
+           
+-Example:
+
+	NICK Wiz
+
+Introducing new nick "Wiz".
+
+
+	:WiZ NICK Kilroy
+	
+WiZ changed his nickname to Kilroy. 
+------------------------------------------------------------------------------
+
+
+USER <username> <hostname> <servername> <realname>
+
+Is used at the beginning of connection to specify the username, hostname, servername and realname of the new user. The realname parameter must be the last parameter, because it may contain space characters and must be prefixed with a colon (':') to make sure this is recognised as such.
+
+-Numeric Replies:
+
+461     ERR_NEEDMOREPARAMS
+	"<command> :Not enough parameters"
+                        
+462     ERR_ALREADYREGISTRED
+	":You may not reregister"
+
+-Example:
+
+	USER guest tolmoon tolsun :Ronnie Reagan
+	
+User registering themselves with a username of "guest" and real name "Ronnie Reagan"
+------------------------------------------------------------------------------
+
+
+QUIT <quit message>
+
+A client session is ended with a quit message. The server must close the connection to a client which sends a QUIT message. If a "Quit Message" is given, this will be sent instead of the default message, the nickname.
+
+-Numeric Replies:
+
+None.
+
+-Example:
+
+	QUIT :Gone to have lunch        
+   
+Preferred message format.
+------------------------------------------------------------------------------
+
+
+JOIN <channel>{,<channel>} [<key>{,<key>}]
+
+Is used by client to start listening a specific channel. Whether or not a client is allowed to join a channel is
+checked only by the server the client is connected to.
+
+The conditions which affect this are as follows:
+
+	1.  the user must be invited if the channel is invite-only.
+           
+	2.  the user's nick/username/hostname must not match any active bans.
+
+	3.  the correct key (password) must be given if it is set.
+	
+Once a user has joined a channel, they receive notice about all commands their server receives which affect the channel. This includes MODE, KICK, PART, QUIT and of course PRIVMSG/NOTICE.
+   
+The JOIN command needs to be broadcast to all servers so that each server knows where to find the users who are on the channel.
+   
+If a JOIN is successful, the user is then sent the channel's topic (using RPL_TOPIC) and the list of users who are on the channel (using RPL_NAMREPLY), which must include the user joining.
+
+-Numeric Replies:
+
+461     ERR_NEEDMOREPARAMS
+	"<command> :Not enough parameters"
+                        
+474     ERR_BANNEDFROMCHAN
+	"<channel> :Cannot join channel (+b)"
+                        
+473     ERR_INVITEONLYCHAN
+	"<channel> :Cannot join channel (+i)"
+                        
+475     ERR_BADCHANNELKEY
+	"<channel> :Cannot join channel (+k)"
+                        
+                        
+471     ERR_CHANNELISFULL
+	"<channel> :Cannot join channel (+l)"
+                        
+476     ERR_BADCHANMASK
+
+
+403     ERR_NOSUCHCHANNEL
+	"<channel name> :No such channel"
+                        
+
+405     ERR_TOOMANYCHANNELS
+	"<channel name> :You have joined too many channels"
+	- Sent to a user when they have joined the maximum number of allowed channels and they try to join another channel.
+                  
+332     RPL_TOPIC
+	"<channel> :<topic>"
+	- When sending a TOPIC message to determine the channel topic, one of two replies is sent.  If the topic is set, RPL_TOPIC is sent back else RPL_NOTOPIC.
+
+-Examples:
+
+	JOIN #foobar
+   
+Join channel #foobar.
+
+
+	JOIN &foo fubar
+
+Join channel &foo using key "fubar".
+
+
+	JOIN #foo,&bar fubar
+   
+Join channel #foo using key "fubar" and &bar using no key.
+
+
+	JOIN #foo,#bar fubar,foobar
+   
+Join channel #foo using key "fubar", and channel #bar using key "foobar".
+
+
+	JOIN #foo,#bar
+   
+Join channels #foo and #bar.
+
+
+	:WiZ JOIN #Twilight_zone
+   
+Join message from WiZ.
+------------------------------------------------------------------------------
+
+
+PART <channel>{,<channel>}
+
+The PART message causes the client sending the message to be removed from the list of active users for all given channels listed in the parameter string.
+
+-Numeric Replies:
+
+461     ERR_NEEDMOREPARAMS
+	"<command> :Not enough parameters"
+                        
+403     ERR_NOSUCHCHANNEL
+	"<channel name> :No such channel"
+                        
+442     ERR_NOTONCHANNEL
+	"<channel> :You're not on that channel"
+
+-Examples:
+
+	PART #twilight_zone
+   
+leave channel "#twilight_zone".
+
+
+	PART #oz-ops,&group5
+   
+leave both channels "&group5" and "#oz-ops".
+------------------------------------------------------------------------------
+
+
+MODE
+
+It allows both usernames and channels to have their mode changed. When parsing MODE messages, it is recommended that the entire message be parsed first and then the changes which resulted then passed on.
+
+(vvvfrom subject, commands specific to channel operators)
+
+-channel modes:
+
+	i	Set/remove Invite-only channel
+
+	t	Set/remove the restrictions of the TOPIC command to channel operators
+
+	k	Set/remove the channel key (password)
+
+	o	Give/take channel operator privilege
+
+	l	Set/remove the user limit to channel
+	
+Use +/- to set/remove the mode.
+
+If a user attempts to make themselves an operator using the "+o" flag, the attempt should be ignored(502).
+
+-Replies:
+
+461     ERR_NEEDMOREPARAMS
+	"<command> :Not enough parameters"
+                        
+324     RPL_CHANNELMODEIS
+	"<channel> <mode> <mode params>"
+                        
+482     ERR_CHANOPRIVSNEEDED
+	"<channel> :You're not channel operator"
+                        
+401     ERR_NOSUCHNICK
+	"<nickname> :No such nick/channel"                        
+
+442     ERR_NOTONCHANNEL
+	"<channel> :You're not on that channel"
+                        
+467     ERR_KEYSET
+	"<channel> :Channel key already set"
+                        
+367     RPL_BANLIST
+	"<channel> <banid>"
+                        
+368     RPL_ENDOFBANLIST
+	"<channel> :End of channel ban list"                     
+                                             
+472     ERR_UNKNOWNMODE
+	"<char> :is unknown mode char to me"
+                        
+403     ERR_NOSUCHCHANNEL
+	"<channel name> :No such channel"
+                        
+502     ERR_USERSDONTMATCH
+	":Cant change mode for other users"
+                        
+221     RPL_UMODEIS
+	"<user mode string>"
+	- To answer a query about a client's own mode, RPL_UMODEIS is sent back.
+                        
+501     ERR_UMODEUNKNOWNFLAG
+	":Unknown MODE flag"
+           
+-Examples:
+
+	MODE #Finnish +i
+
+Makes #Finnish channel 'invite-only'.
+
+
+	MODE #Finnish +o Kilroy
+	
+Gives 'chanop'(channel operator) privileges to Kilroy on channel #Finnish.
+
+
+	MODE #42 +k oulu
+	
+Set the channel '42' key to "oulu".
+
+
+	MODE #eu-opers +l 10
+
+Set the limit for the number of users on channel 'eu-pers' to 10.
+
+
+(Rosa: no good examples in the rfc found, using these from https://github.com/malatini42/ft_irc)
+
+	MODE #42 -t
+	
+
+Remove topic protection to '42' channel
+
+
+	MODE #42 +t
+
+Set topic protectionto '42' channel
+------------------------------------------------------------------------------
+
+
+TOPIC <channel> [<topic>]
+
+The TOPIC message is used to change or view the topic of a channel. The topic for channel <channel> is returned if there is no <topic> given. If the <topic> parameter is present, the topic for that channel will be changed, if the channel modes permit this action.
+
+-Numeric Replies:
+
+461     ERR_NEEDMOREPARAMS
+	"<command> :Not enough parameters"
+                        
+442     ERR_NOTONCHANNEL
+	"<channel> :You're not on that channel"
+                        
+331     RPL_NOTOPIC
+	"<channel> :No topic is set"
+                        
+332     RPL_TOPIC
+	"<channel> :<topic>"
+                        
+482     ERR_CHANOPRIVSNEEDED
+	"<channel> :You're not channel operator"
+
+-Examples:
+
+	:Wiz TOPIC #test :New topic
+	
+User Wiz setting the topic.
+
+
+	TOPIC #test :another topic
+	
+Set the topic on #test to "another topic".
+
+
+	TOPIC #test
+	
+Check the topic for #test.
+------------------------------------------------------------------------------
+
+
+INVITE <nickname> <channel>
+
+Is used to invite users to a channel. The parameter <nickname> is the nickname of the person to be invited to the target channel <channel>.
+
+There is no requirement that the channel the target user is being invited to must exist or be a valid channel.
+(Rosa: why tho?)
+
+-Numeric Replies:
+
+461     ERR_NEEDMOREPARAMS
+	"<command> :Not enough parameters"
+                        
+401     ERR_NOSUCHNICK
+	"<nickname> :No such nick/channel"
+                        
+                        
+442     ERR_NOTONCHANNEL
+	"<channel> :You're not on that channel"
+                        
+443     ERR_USERONCHANNEL
+	"<user> <channel> :is already on channel"
+                        
+482     ERR_CHANOPRIVSNEEDED
+	"<channel> :You're not channel operator"
+                        
+341     RPL_INVITING
+	"<channel> <nick>"
+                        
+301     RPL_AWAY
+	"<nick> :<away message>"
+
+
+-Examples:
+
+	:Angel INVITE Wiz #Dust
+	
+User Angel inviting WiZ to channel #Dust
+
+
+	INVITE Wiz #Twilight_Zone
+	
+Command to invite WiZ to #Twilight_zone
+------------------------------------------------------------------------------
+
+
+KICK <channel> <user> [<comment>]
+
+The KICK command can be used to forcibly remove a user from a channel. It 'kicks them out' of the channel (forced PART). Only a channel operator may kick another user out of a channel. Each server that receives a KICK message checks that it is valid (ie the sender is actually a channel operator) before removing the victim from the channel.
+
+-Numeric Replies:
+
+461     ERR_NEEDMOREPARAMS
+	"<command> :Not enough parameters"
+                        
+403     ERR_NOSUCHCHANNEL
+	"<channel name> :No such channel"
+                                                
+476     ERR_BADCHANMASK
+
+482     ERR_CHANOPRIVSNEEDED
+	"<channel> :You're not channel operator"
+                                                
+442     ERR_NOTONCHANNEL
+	"<channel> :You're not on that channel"
+
+-Examples:
+
+	KICK &Melbourne Matthew
+
+Kick Matthew from &Melbourne
+
+
+	KICK #Finnish John :Speaking English
+	
+Kick John from #Finnish using "Speaking English" as the reason (comment).
+
+
+	:WiZ KICK #Finnish John
+
+KICK message from WiZ to remove John from channel #Finnish
+------------------------------------------------------------------------------
+
+
+PRIVMSG <receiver>{,<receiver>} <text to be sent>
+
+PRIVMSG is used to send private messages between users. <receiver> is the nickname of the receiver of the message. <receiver> can also be a list of names or channels separated with commas.
+
+-Numeric Replies:
+
+411     ERR_NORECIPIENT
+	":No recipient given (<command>)"
+                        
+412     ERR_NOTEXTTOSEND
+	":No text to send"
+                                                
+404     ERR_CANNOTSENDTOCHAN
+	"<channel name> :Cannot send to channel"
+                        
+413     ERR_NOTOPLEVEL
+	"<mask> :No toplevel domain specified"                        
+                        
+414     ERR_WILDTOPLEVEL
+	"<mask> :Wildcard in toplevel domain"
+                        
+407     ERR_TOOMANYTARGETS
+	"<target> :Duplicate recipients. No message delivered"
+                        
+401     ERR_NOSUCHNICK
+	"<nickname> :No such nick/channel"
+                                                
+301     RPL_AWAY
+	"<nick> :<away message>"
+
+-Examples:
+
+	:Angel PRIVMSG Wiz :Hello are you receiving this message?
+	
+Message from Angel to Wiz.
+
+
+	PRIVMSG Angel :yes I'm receiving it !receiving it!
+	
+Message to Angel.
+
+
+	PRIVMSG jto@tolsun.oulu.fi :Hello !
+
+Message to a client on server tolsun.oulu.fi with username of "jto".
+------------------------------------------------------------------------------
+
+
+-Replies
+
+numeric replies which are generated in response to the commands given above. Each numeric is given with its number, name and reply string.
+
+-Error replies and command responses:
+
+(Rosa: alot of them lol, need to narrow it down based on the commands and complexity of our project, idk if we have to do ALL of them)
+
+(Rosa: these are from https://github.com/AhmedFatir/ft_irc/tree/master replies.hpp, a good example of how the replies could be formated)
+
+//////////////////////////////////////////////////////////////////////////////
+
+#define once
+
+#define CRLF "\r\n"
+
+#define RPL_CONNECTED(nickname) (": 001 " + nickname + " : Welcome to the IRC server!" + CRLF)
+
+#define RPL_UMODEIS(hostname, channelname, mode, user)  ":" + hostname + " MODE " + channelname + " " + mode + " " + user + CRLF
+
+#define RPL_CREATIONTIME(nickname, channelname, creationtime) ": 329 " + nickname + " #" + channelname + " " + creationtime + CRLF
+
+#define RPL_CHANNELMODES(nickname, channelname, modes) ": 324 " + nickname + " #" + channelname + " " + modes + CRLF
+
+#define RPL_CHANGEMODE(hostname, channelname, mode, arguments) (":" + hostname + " MODE #" + channelname + " " + mode + " " + arguments + CRLF)
+
+#define RPL_NICKCHANGE(oldnickname, nickname) (":" + oldnickname + " NICK " + nickname + CRLF)
+
+#define RPL_JOINMSG(hostname, ipaddress, channelname) (":" + hostname + "@" + ipaddress + " JOIN #" + channelname + CRLF)
+
+#define RPL_NAMREPLY(nickname, channelname, clientslist) (": 353 " + nickname + " @ #" + channelname + " :" + clientslist + CRLF)
+
+#define RPL_ENDOFNAMES(nickname, channelname) (": 366 " + nickname + " #" + channelname + " :END of /NAMES list" + CRLF)
+
+#define RPL_TOPICIS(nickname, channelname, topic) (": 332 " + nickname + " #" +channelname + " :" + topic + "\r\n")
+
+
+///////// ERRORS ////////////////
+
+#define ERR_NEEDMODEPARM(channelname, mode) (": 696 #" + channelname + " * You must specify a parameter for the key mode. " + mode + CRLF)
+
+#define ERR_INVALIDMODEPARM(channelname, mode) ": 696 #" + channelname + " Invalid mode parameter. " + mode + CRLF
+
+#define ERR_KEYSET(channelname) ": 467 #" + channelname + " Channel key already set. " + CRLF
+
+#define ERR_UNKNOWNMODE(nickname, channelname, mode) ": 472 " + nickname + " #" + channelname + " " + mode + " :is not a recognised channel mode" + CRLF
+
+#define ERR_NOTENOUGHPARAM(nickname) (": 461 " + nickname + " :Not enough parameters." + CRLF)
+
+#define ERR_CHANNELNOTFOUND(nickname, channelname) (": 403 " + nickname + " " + channelname + " :No such channel" + CRLF)
+
+#define ERR_NOTOPERATOR(channelname) (": 482 #" + channelname + " :You're not a channel operator" + CRLF)
+
+#define ERR_NOSUCHNICK(channelname, name) (": 401 #" + channelname + " " + name + " :No such nick/channel" + CRLF )
+
+#define ERR_INCORPASS(nickname) (": 464 " + nickname + " :Password incorrect !" + CRLF )
+
+#define ERR_ALREADYREGISTERED(nickname) (": 462 " + nickname + " :You may not reregister !" + CRLF )
+
+#define ERR_NONICKNAME(nickname) (": 431 " + nickname + " :No nickname given" + CRLF )
+
+#define ERR_NICKINUSE(nickname) (": 433 " + nickname + " :Nickname is already in use" + CRLF)
+
+#define ERR_ERRONEUSNICK(nickname) (": 432 " + nickname + " :Erroneus nickname" + CRLF)
+
+#define ERR_NOTREGISTERED(nickname) (": 451 " + nickname + " :You have not registered!" + CRLF)
+
+#define ERR_CMDNOTFOUND(nickname, command) (": 421 " + nickname + " " + command + " :Unknown command" + CRLF)
+
+//////////////////////////////////////////////////////////////////////////////
+end(for now)
+------------------------------------------------------------------------------
+
