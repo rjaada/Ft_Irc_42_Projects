@@ -22,6 +22,9 @@
 # include <unistd.h>
 # include <string>
 # include <fcntl.h>
+# include <map>
+# include "client.hpp"
+
 
 class server
 {
@@ -29,6 +32,7 @@ class server
 		int serverSocket;
 		int nfds;
 		pollfd fds[100];
+		std::map<int, client> clients;
 		sockaddr_in serverAdress;
 		int port;
 		std::string password;
@@ -41,6 +45,8 @@ class server
 		~server();
 
 		void run();
+		void processLine(client &c, std::string line);
+
 
 };
 

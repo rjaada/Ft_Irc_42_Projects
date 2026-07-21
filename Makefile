@@ -4,7 +4,7 @@ SRC_DIR = ./Srcs/
 OBJ_DIR = obj/
 SRC =	main.cpp\
 		server.cpp\
-#		client.cpp\
+		client.cpp\
 
 OBJS	= $(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
 

@@ -10,28 +10,82 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <cstring>
-#include <iostream>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <arpa/inet.h>
+#include "client.hpp"
 
-int main(void)
+client::client(int fd) : fd(fd), buffer(""), nickname(""), username(""), authenticated(false), registered(false){}
+
+client::client(client const &other)
 {
-	int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-	
-	sockaddr_in serverAdress;
-	serverAdress.sin_family = AF_INET;
-	serverAdress.sin_port = htons(8080);
-	serverAdress.sin_addr.s_addr = inet_addr("127.0.0.1");
+	*this = other;
+}
 
-	connect(clientSocket, (struct sockaddr*)&serverAdress, sizeof(serverAdress));
+client& client::operator=(client const &other)
+{
+	if(this != &other)
+	{
+		this->fd = other.fd;
+		this->buffer = other.buffer;
+		this->nickname = other.nickname;
+		this->username = other.username;
+		this->authenticated = other.authenticated;
+		this->registered = other.registered;
+	}
+	return *this;
+}
 
-	const char* message = "hello, server!";
-	send(clientSocket, message, strlen(message), 0);
+client::~client(){}
 
-	close(clientSocket);
+int client::get_fd()
+{
+	return this->fd;
+}
 
-	return 0;
+std::string client::get_buffer()
+{
+	return this->buffer;
+}
+
+std::string client::get_nickname()
+{
+	return this->nickname;
+}
+
+std::string client::get_username()
+{
+	return this->username;
+}
+
+bool client::is_authenticated()
+{
+	return this->authenticated;
+}
+
+bool client::is_registered()
+{
+	return this->registered;
+}
+
+void client::set_nickname(std::string nickname)
+{
+	this->nickname = nickname;
+}
+
+void client::set_username(std::string username)
+{
+	this->username = username;
+}
+
+void client::set_buffer(std::string buffer)
+{
+	this->buffer = buffer;
+}
+
+void client::set_auth(bool authenticated)
+{
+	this->authenticated = authenticated;
+}
+
+void client::set_reg(bool registered)
+{
+	this->registered = registered;
 }
