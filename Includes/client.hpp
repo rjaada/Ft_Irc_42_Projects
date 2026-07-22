@@ -27,11 +27,13 @@ class client
 {
 	private:
 		int fd;
-		std::string buffer; // recv leftovers till we get a full \r\n line
+		std::string buffer;
+		std::string outBuffer; // stuff queued to send, waits here till poll says fd is writable
 		std::string nickname;
 		std::string username;
 		bool authenticated; // pass checked ok
 		bool registered; // nick + user both set
+
 	public:
 		client(int fd);
 		client(client const &other);
@@ -41,6 +43,7 @@ class client
 		//getters
 		int get_fd();
 		std::string get_buffer();
+		std::string get_outBuffer();
 		std::string get_nickname();
 		std::string get_username();
 		bool is_authenticated();
@@ -50,8 +53,11 @@ class client
 		void set_nickname(std::string nickname);
     	void set_username(std::string username);
     	void set_buffer(std::string buffer);
+		void set_outBuffer(std::string outBuffer);
 		void set_auth(bool authenticated);
 		void set_reg(bool registered);
+
+
 
 };
 

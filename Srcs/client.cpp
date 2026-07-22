@@ -25,6 +25,7 @@ client& client::operator=(client const &other)
 	{
 		this->fd = other.fd;
 		this->buffer = other.buffer;
+		this->outBuffer = other.outBuffer;
 		this->nickname = other.nickname;
 		this->username = other.username;
 		this->authenticated = other.authenticated;
@@ -43,6 +44,11 @@ int client::get_fd()
 std::string client::get_buffer()
 {
 	return this->buffer;
+}
+
+std::string client::get_outBuffer()
+{
+	return this->outBuffer;
 }
 
 std::string client::get_nickname()
@@ -78,6 +84,11 @@ void client::set_username(std::string username)
 void client::set_buffer(std::string buffer)
 {
 	this->buffer = buffer;
+}
+
+void client::set_outBuffer(std::string outBuffer)
+{
+	this->outBuffer = outBuffer;
 }
 
 void client::set_auth(bool authenticated)
