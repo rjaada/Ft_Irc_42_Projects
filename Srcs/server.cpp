@@ -12,6 +12,7 @@
 
 #include "server.hpp"
 
+// rosa work on parsing here, dont touch
 void server::processLine(client &c, std::string line)
 {
 	std::cout << "Client " << c.get_fd() << " sent line: [" << line << "]" << std::endl;
@@ -24,15 +25,17 @@ server::server()
 server::server(int port, std::string password) : port(port), password(password)
 {
 	this->serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-	
+
+	// non blocking, subject says every fd must be non blocking
 	fcntl(serverSocket, F_SETFL, O_NONBLOCK);
-	
+
 	serverAdress.sin_family = AF_INET;
 	serverAdress.sin_port = htons(this->port);
 	serverAdress.sin_addr.s_addr = inet_addr("127.0.0.1");
 	bind(serverSocket, (struct sockaddr *)&serverAdress, sizeof(serverAdress));
 	listen(serverSocket, 5);
 
+	// listening socket goes in slot 0, watched for POLLIN (new connections)
 	fds[0].fd = serverSocket;
 	fds[0].events = POLLIN;
 	this->nfds = 1;
@@ -67,6 +70,7 @@ void server::run()
 {
 	while (1)
 	{
+		// only poll() call in the whole prog, blocks till something is ready
 		poll(this->fds, this->nfds, -1);
 
 		for (int i = 0; i < this->nfds; i++)
@@ -75,6 +79,7 @@ void server::run()
 			{
 				if (this->fds[i].fd == this->serverSocket)
 				{
+					// listening socket ready = new client waiting, accept it
 					int newClient = accept(this->serverSocket, NULL, NULL);
 					this->clients.insert(std::make_pair(newClient, client(newClient)));
 					fcntl(newClient, F_SETFL, O_NONBLOCK);
@@ -89,8 +94,10 @@ void server::run()
 					int bytes = recv(fds[i].fd, buffer, sizeof(buffer), 0);
 					if (bytes <= 0)
 					{
+						// 0 = client closed clean, <0 = error, either way drop it
 						close(this->fds[i].fd);
 						this->clients.erase(this->fds[i].fd);
+						// swap remove, last fd takes this slot so array stays packed
 						this->fds[i] = this->fds[this->nfds - 1];
 						this->nfds--;
 						i--;
@@ -100,6 +107,9 @@ void server::run()
 						client &c = this->clients.find(fds[i].fd)->second;
 						c.set_buffer(c.get_buffer() + buffer);
 
+						// recv can give partial lines or multiple lines at once
+						// so we keep everything in the client buffer and only
+						// pull out full lines, \r\n terminated, leftover stays
 						std::string full = c.get_buffer();
 						size_t pos;
 						while ((pos = full.find("\r\n")) != std::string::npos)

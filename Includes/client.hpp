@@ -27,11 +27,11 @@ class client
 {
 	private:
 		int fd;
-		std::string buffer;
+		std::string buffer; // recv leftovers till we get a full \r\n line
 		std::string nickname;
 		std::string username;
-		bool authenticated;
-		bool registered;
+		bool authenticated; // pass checked ok
+		bool registered; // nick + user both set
 	public:
 		client(int fd);
 		client(client const &other);

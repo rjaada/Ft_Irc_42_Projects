@@ -30,9 +30,9 @@ class server
 {
 	private:
 		int serverSocket;
-		int nfds;
-		pollfd fds[100];
-		std::map<int, client> clients;
+		int nfds; // how many fds actually used in fds[]
+		pollfd fds[100]; // all fds we poll on, slot 0 always the listening socket
+		std::map<int, client> clients; // fd -> client, quick lookup by fd
 		sockaddr_in serverAdress;
 		int port;
 		std::string password;
