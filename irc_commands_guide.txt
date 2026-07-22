@@ -523,7 +523,7 @@ PRIVMSG is used to send private messages between users. <receiver> is the nickna
 Message from Angel to Wiz.
 
 
-	PRIVMSG Angel :yes I'm receiving it !receiving it!
+	PRIVMSG Angel :yes I'm receiving it!
 	
 Message to Angel.
 
