@@ -264,7 +264,7 @@ leave both channels "&group5" and "#oz-ops".
 ------------------------------------------------------------------------------
 
 
-MODE
+MODE <channel> {[+|-]|i|t|k|o|l} [<limit>] [<user>]
 
 It allows both usernames and channels to have their mode changed. When parsing MODE messages, it is recommended that the entire message be parsed first and then the changes which resulted then passed on.
 
