@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "client.hpp"
+#include "Client.hpp"
 
 client::client(int fd) : fd(fd), buffer(""), nickname(""), username(""), authenticated(false), registered(false){}
 

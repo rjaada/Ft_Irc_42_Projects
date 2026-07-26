@@ -10,7 +10,7 @@
 
 //#include <cctype>
 #include <cstdlib>
-#include "server.hpp"
+#include "Server.hpp"
 
 static void		handleSignal(int signal)
 {

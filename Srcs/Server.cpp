@@ -79,6 +79,29 @@ server::~server()
 {
 }
 
+void server::disconnectClient(int index)
+{
+	// send failed, connection is dead, drop the client
+	close(this->fds[index].fd);
+	this->clients.erase(this->fds[index].fd);
+	// swap remove, last fd takes this slot so array stays packed
+	this->fds[index] = this->fds[this->nfds - 1];
+	this->nfds--;
+	index--;
+}
+
+void server::handleQuit(client &c)
+{
+	for (int i = 0; i < nfds; i++)
+	{
+		if (fds[i].fd == c.get_fd())
+		{
+			disconnectClient(i);
+			break;
+		}
+	}
+}
+
 void server::run()
 {
 	while (1)
@@ -100,12 +123,13 @@ void server::run()
 					int byteSent = send(fds[i].fd, check_buffer.c_str(), check_buffer.size(), 0);
 					if (byteSent <= 0)
 					{
-						// send failed, connection is dead, drop the client
+						disconnectClient(i);
+						/*// send failed, connection is dead, drop the client
 						close(this->fds[i].fd);
 						this->clients.erase(this->fds[i].fd);
 						// swap remove, last fd takes this slot so array stays packed
 						this->fds[i] = this->fds[this->nfds - 1];
-						this->nfds--;
+						this->nfds--;*/
 						i--;
 						// skip the POLLIN check below, fds[i] is a different fd now
 						continue;
@@ -142,12 +166,13 @@ void server::run()
 					int bytes = recv(fds[i].fd, buffer, sizeof(buffer), 0);
 					if (bytes <= 0)
 					{
-						// 0 = client closed clean, <0 = error, either way drop it
+						disconnectClient(i);
+						/*/ 0 = client closed clean, <0 = error, either way drop it
 						close(this->fds[i].fd);
 						this->clients.erase(this->fds[i].fd);
 						// swap remove, last fd takes this slot so array stays packed
 						this->fds[i] = this->fds[this->nfds - 1];
-						this->nfds--;
+						this->nfds--;*/
 						i--;
 					}
 					else

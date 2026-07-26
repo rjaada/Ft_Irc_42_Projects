@@ -14,8 +14,19 @@
 # define REPLIES_HPP
 
 # include <string>
+# include <iostream>
 
+//PRIVMSG
 std::string err_norecipient(std::string target, std::string command);
 std::string err_notexttosend(std::string target);
+std::string err_nosuchnick(std::string target);
+
+//REGISTRATION
+std::string err_passwdmismatch();
+std::string err_nicknameinuse(std::string target);
+std::string err_nonicknamegiven(std::string target);
+std::string err_erroneusnickname(std::string target);
+std::string err_needmoreparams(std::string target);
+std::string err_alreadyregistred(std::string target);
 
 #endif

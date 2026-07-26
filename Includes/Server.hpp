@@ -47,6 +47,8 @@ class server
 		void run();
 		void processLine(client &c, std::string line);
 		void sendToClient(int fd, std::string message);
+		void disconnectClient(int index);
+		void handleQuit(client &c);
 
 
 };
