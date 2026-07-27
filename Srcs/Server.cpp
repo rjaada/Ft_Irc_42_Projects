@@ -10,20 +10,48 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Client.hpp"
-#include "Server.hpp"
+#include "../Includes/Client.hpp"
+#include "../Includes/Server.hpp"
+#include "../Includes/Replies.hpp"
+#include <sstream>
 
 // rosa work on parsing here, dont touch
 void server::processLine(client &c, std::string line)
 {
 	std::cout << "Client " << c.get_fd() << " sent line: [" << line << "]" << std::endl;
+	// TEMP TEST FOR PASS
+	if (line.substr(0, 5) == "PASS ")
+	{
+		std::vector<std::string> params;
+		params.push_back("PASS");
+		params.push_back(line.substr(5));
+		handlePass(c, params);
+	}
+	// TEMP TEST FOR NICK
+	if(line.substr(0, 5) == "NICK ")
+	{
+		std::vector<std::string> params;
+		params.push_back("NICK");
+		params.push_back(line.substr(5));
+		handleNick(c, params);
+	}
+	// TEMP TEST FOR USER
+	if (line.substr(0, 5) == "USER ")
+	{
+		std::vector<std::string> params;
+		std::istringstream iss(line);
+		std::string token;
+		while (iss >> token)
+			params.push_back(token);
+		handleUser(c, params);
+	}
 }
 
 // queue a message for a client, dont send it here, poll() will send it when ready
 void server::sendToClient(int fd, std::string message)
 {
 	client &c = this->clients.find(fd)->second;
-	c.set_outBuffer(c.get_outBuffer() + message + "\r\n");
+	c.set_outBuffer(c.get_outBuffer() + message);
 	// find this fd slot in fds[] and arm POLLOUT so poll() watches for writable too
 	for (int i = 0; i < nfds; i++)
 	{
@@ -102,6 +130,55 @@ void server::handleQuit(client &c)
 	}
 }
 
+void server::handlePass(client &c, std::vector<std::string> params)
+{
+	if(params.size() < 2)
+	{
+		sendToClient(c.get_fd(), err_needmoreparams("*"));
+		return;
+	}
+	if(params[1] != this->password)
+	{
+		sendToClient(c.get_fd(), err_passwdmismatch());
+		return;
+	}
+	else
+		c.set_auth(true);
+}
+
+void server::handleNick(client &c, std::vector<std::string> params)
+{
+	if (params.size() < 2)
+	{
+		sendToClient(c.get_fd(), err_nonicknamegiven("*"));
+		return;
+	}
+	for (std::map<int, client>::iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		if (it->second.get_nickname() == params[1])
+		{
+			sendToClient(c.get_fd(), err_nicknameinuse("*"));
+			return;
+		}
+	}
+	c.set_nickname(params[1]);
+}
+
+void server::handleUser(client &c, std::vector<std::string> params)
+{
+	if(params.size() < 5)
+	{
+		sendToClient(c.get_fd(), err_needmoreparams("*"));
+		return;
+	}
+	if(c.is_registered())
+	{
+		sendToClient(c.get_fd(), err_alreadyregistred("*"));
+		return;
+	}
+	c.set_username(params[1]);
+}
+
 void server::run()
 {
 	while (1)
@@ -124,14 +201,6 @@ void server::run()
 					if (byteSent <= 0)
 					{
 						disconnectClient(i);
-						/*// send failed, connection is dead, drop the client
-						close(this->fds[i].fd);
-						this->clients.erase(this->fds[i].fd);
-						// swap remove, last fd takes this slot so array stays packed
-						this->fds[i] = this->fds[this->nfds - 1];
-						this->nfds--;*/
-						i--;
-						// skip the POLLIN check below, fds[i] is a different fd now
 						continue;
 					}
 					else
@@ -167,12 +236,6 @@ void server::run()
 					if (bytes <= 0)
 					{
 						disconnectClient(i);
-						/*/ 0 = client closed clean, <0 = error, either way drop it
-						close(this->fds[i].fd);
-						this->clients.erase(this->fds[i].fd);
-						// swap remove, last fd takes this slot so array stays packed
-						this->fds[i] = this->fds[this->nfds - 1];
-						this->nfds--;*/
 						i--;
 					}
 					else
@@ -191,7 +254,7 @@ void server::run()
 							full.erase(0, pos + 2);
 							processLine(c, line);
 							// tempo, just to test the send pipeline, echoes back what u typed
-							sendToClient(c.get_fd(), line);
+							sendToClient(c.get_fd(), line + "\r\n");
 						}
 						c.set_buffer(full);
 					}

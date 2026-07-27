@@ -22,6 +22,7 @@
 # include <unistd.h>
 # include <string>
 # include <fcntl.h>
+# include <vector>
 # include <map>
 # include "Client.hpp"
 
@@ -49,6 +50,9 @@ class server
 		void sendToClient(int fd, std::string message);
 		void disconnectClient(int index);
 		void handleQuit(client &c);
+		void handlePass(client &c, std::vector<std::string> params);
+		void handleNick(client &c, std::vector<std::string> params);
+		void handleUser(client &c, std::vector<std::string> params);
 
 
 };

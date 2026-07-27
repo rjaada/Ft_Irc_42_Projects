@@ -5,6 +5,7 @@ OBJ_DIR = obj/
 SRC =	main.cpp\
 		Server.cpp\
 		Client.cpp\
+		Replies.cpp\
 
 OBJS	= $(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
 
