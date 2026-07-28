@@ -389,7 +389,7 @@ int Parser::modeParaCount()
 	int	sFlag = 0;
 	int	wFlag = 0;
 	int	setRemFlag = 0;
-	int	modeFlag = 0;
+//	int	modeFlag = 0;
 	size_t	strSize = _rawStr.size();
 	for (size_t i = 0; i < strSize ; i++)
 	{
