@@ -1,33 +1,23 @@
 #include "Parser.hpp"
 
 Parser::Parser() : _rawStr("Empty")
-{
-	std::cout << "Parser default constructor with Empty rawInput" << std::endl;
-}
+{}
 
 Parser::Parser(std::string rawInput) : _rawStr(rawInput)
-{
-	std::cout << "Parser constructor with rawInput: " << rawInput << std::endl;
-}
+{}
 
 Parser::Parser(const Parser &other) : _rawStr(other._rawStr)
-{
-	std::cout << "Parser copy constructor with rawInput: " << _rawStr << std::endl;
-}
+{}
 
 Parser &Parser::operator=(const Parser &other)
 {
 	if (this != &other)
 		this->_rawStr = other._rawStr;
-	std::cout << "Parser copy assignment with rawInput: " << _rawStr << std::endl;
-
 	return (*this);
 }
 
 Parser::~Parser()
-{
-	std::cout << "Parser destructor with rawInput: " << _rawStr << std::endl;
-}
+{}
 
 std::string Parser::getRawStr()
 {
@@ -507,24 +497,24 @@ std::vector<std::string> Parser::parseStr(std::string str, std::string delim, st
 
 void Parser::parseStart()
 {
-	std::cout << HMAG "----------ParseStart-------------" << std::endl;
+//	std::cout << HMAG "----------ParseStart-------------" << std::endl;
 	if (_rawStr.empty())
-		std::cout << RED << "_rawStr is empty" << std::endl;
+//		std::cout << RED << "_rawStr is empty" << std::endl;
 	if (isRawComm())
 	{
-		std::cout << HBLU "-----getCommType-----" << std::endl;
+//		std::cout << HBLU "-----getCommType-----" << std::endl;
 		std::string	type =  getCommType();
-		std::cout << "Type is: "<< type << std::endl;
-		std::cout << HCYN "-----checkParams-----" << std::endl;
+//		std::cout << "Type is: "<< type << std::endl;
+//		std::cout << HCYN "-----checkParams-----" << std::endl;
 		int	confirm = checkParams(type);
 		if (confirm == 1)
 		{
-			std::cout << "Params: good!" << std::endl;
-			std::cout << HGRN "-----parseStr--------" << std::endl;
+//			std::cout << "Params: good!" << std::endl;
+//			std::cout << HGRN "-----parseStr--------" << std::endl;
 			_params = parseStr(_rawStr, " ", ":");
-			for (size_t i = 0 ; i < _params.size() ; i++) //for testing only
-				std::cout << "[" << _params[i] << "]" << ' ';//
-			std::cout << '\n';//
+//			for (size_t i = 0 ; i < _params.size() ; i++) //for testing only
+//				std::cout << "[" << _params[i] << "]" << ' ';//
+//			std::cout << '\n';//
 		}
 		if(confirm == -1)
 			std::cout << RED << type << " 461 ERR_NEEDMOREPARAMS :Not enough parameters" << std::endl;
