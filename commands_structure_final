@@ -1,0 +1,54 @@
+PASS <password>
+
+-------------------------------------
+NICK <nickname>
+NICK <nickname> <new_nickname>
+
+-------------------------------------
+USER <username> <hostname> <servername> :<realname>
+
+-------------------------------------
+QUIT
+QUIT :<away_message>
+
+-------------------------------------
+JOIN <channel>
+JOIN <channel_1>,<channel_2> <key>
+JOIN <channel_1>,<channel_2> <key_A>,<key_B>
+
+-------------------------------------
+PART <channel>
+PART <channel_1>,<channel_2>
+
+-------------------------------------
+INVITE <nickname> <channel>
+
+-------------------------------------
+KICK <channel> <user>
+KICK <channel> <user> :<message>
+
+-------------------------------------
+TOPIC <channel>
+TOPIC <channel> :<new_topic>
+
+-------------------------------------
+PRIVMSG <receiver> :<message>
+PRIVMSG <receiver_1>,<receiver_2> :<message>
+
+-------------------------------------
+MODE <channel> (+/-)(i/t/k/o/l)
+
+MODE <channel> +i
+MODE <channel> -i
+
+MODE <channel> +t
+MODE <channel> -t
+
+MODE <channel> +k <key>
+MODE <channel> -k
+
+MODE <channel> +o <user>
+MODE <channel> -o <user>
+
+MODE <channel> +l <limit>
+MODE <channel> -l
