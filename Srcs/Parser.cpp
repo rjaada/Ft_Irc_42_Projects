@@ -20,6 +20,7 @@ Parser &Parser::operator=(const Parser &other)
 	if (this != &other)
 		this->_rawStr = other._rawStr;
 	std::cout << "Parser copy assignment with rawInput: " << _rawStr << std::endl;
+
 	return (*this);
 }
 
@@ -33,19 +34,18 @@ std::string Parser::getRawStr()
 	return (_rawStr);
 }
 
-std::string commList[] = {"PASS", "NICK", "USER", "JOIN", "PART", "TOPIC",
-	"INVITE", "KICK", "QUIT", "MODE", "PRIVMSG"};
+std::string	commList[] = {"PASS", "NICK", "USER", "JOIN", "PART", "TOPIC", "INVITE", "KICK", "QUIT", "MODE", "PRIVMSG"};
 
-int Parser::isRawComm()
+int	Parser::isRawComm()
 {
 	if (_rawStr == "Empty")
 		return (0);
 	for (int i = 0; i < 11; i++)
 	{
-		std::size_t found = _rawStr.find(commList[i]);
+		std::size_t	found = _rawStr.find(commList[i]);
 		if ((found != std::string::npos) && !(found > commList[i].size()))
 		{
-			if (_rawStr[0] != commList[i][0])
+			if(_rawStr[0] != commList[i][0])
 				return (0);
 			return (1);
 		}
@@ -53,25 +53,23 @@ int Parser::isRawComm()
 	return (0);
 }
 
-std::string Parser::getCommType()
+std::string	Parser::getCommType()
 {
 	for (int i = 0; i < 11; i++)
 	{
-		std::size_t found = _rawStr.find(commList[i]);
+		std::size_t	found = _rawStr.find(commList[i]);
 		if ((found != std::string::npos) && !(found > commList[i].size()))
 			return (commList[i]);
 	}
 	return ("not a command");
 }
 
-int Parser::checkParams(std::string commType)
+int	Parser::checkParams(std::string	commType)
 {
-	int (Parser::*paramType[11])() = {&Parser::passParaCount,
-		&Parser::nickParaCount, &Parser::userParaCount, &Parser::joinParaCount,
-		&Parser::partParaCount, &Parser::topicParaCount,
-		&Parser::inviteParaCount, &Parser::kickParaCount,
-		&Parser::quitParaCount, &Parser::modeParaCount,
-		&Parser::privmsgParaCount};
+	int	(Parser::*paramType[11])() = {&Parser::passParaCount, &Parser::nickParaCount, &Parser::userParaCount, 
+				&Parser::joinParaCount, &Parser::partParaCount, &Parser::topicParaCount, &Parser::inviteParaCount, &Parser::kickParaCount, 
+				&Parser::quitParaCount, &Parser::modeParaCount, &Parser::privmsgParaCount};
+
 	for (int i = 0; i < 11; i++)
 	{
 		if (commList[i] == commType)
@@ -84,14 +82,10 @@ int Parser::checkParams(std::string commType)
 
 int Parser::passParaCount()
 {
-	int		sFlag;
-	int		wFlag;
-	size_t	strSize;
-
-	sFlag = 0;
-	wFlag = 0;
-	strSize = _rawStr.size();
-	for (size_t i = 0; i < strSize; i++)
+	int	sFlag = 0;
+	int	wFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
 	{
 		if (strSize > 4)
 		{
@@ -100,7 +94,7 @@ int Parser::passParaCount()
 			if (_rawStr[4] != ' ')
 				return (-1);
 		}
-		if (_rawStr[i])
+		if(_rawStr[i])
 		{
 			if (_rawStr[i] == ' ')
 				sFlag++;
@@ -122,14 +116,10 @@ int Parser::passParaCount()
 
 int Parser::nickParaCount()
 {
-	int		sFlag;
-	int		wFlag;
-	size_t	strSize;
-
-	sFlag = 0;
-	wFlag = 0;
-	strSize = _rawStr.size();
-	for (size_t i = 0; i < strSize; i++)
+	int	sFlag = 0;
+	int	wFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
 	{
 		if (strSize > 4)
 		{
@@ -138,7 +128,7 @@ int Parser::nickParaCount()
 			if (_rawStr[4] != ' ')
 				return (-1);
 		}
-		if (_rawStr[i])
+		if(_rawStr[i])
 		{
 			if (_rawStr[i] == ' ')
 				sFlag++;
@@ -160,16 +150,11 @@ int Parser::nickParaCount()
 
 int Parser::userParaCount()
 {
-	int		sFlag;
-	int		wFlag;
-	int		colFlag;
-	size_t	strSize;
-
-	sFlag = 0;
-	wFlag = 0;
-	colFlag = 0;
-	strSize = _rawStr.size();
-	for (size_t i = 0; i < strSize; i++)
+	int	sFlag = 0;
+	int	wFlag = 0;
+	int	colFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
 	{
 		if (strSize > 4)
 		{
@@ -178,12 +163,12 @@ int Parser::userParaCount()
 			if (_rawStr[4] != ' ')
 				return (-1);
 		}
-		if (_rawStr[i])
+		if(_rawStr[i])
 		{
 			if (_rawStr[i] == ' ' && i != 0 && !colFlag)
 			{
 				if (_rawStr[i - 1] == ' ')
-					return (0);
+					return(0);
 				sFlag++;
 			}
 			if ((isalnum(_rawStr[i]) || _rawStr[i] == ':') && i != 0)
@@ -192,14 +177,13 @@ int Parser::userParaCount()
 					wFlag++;
 			}
 			if (i + 1 <= strSize)
-				if (_rawStr[i] == ':' && _rawStr[i + 1])
+				if (_rawStr[i] == ':'&& _rawStr[i + 1])
 					colFlag++;
 		}
 	}
 	if (sFlag == 4 && wFlag == 4 && colFlag == 1)
 		return (1);
-	if (sFlag > 4 || wFlag > 4 || colFlag > 1 || (sFlag == 4 && wFlag == 4
-			&& !colFlag))
+	if (sFlag > 4 || wFlag > 4 || colFlag > 1 || (sFlag == 4 && wFlag == 4 && !colFlag))
 		return (0);
 	if ((sFlag == wFlag - 1) || !colFlag)
 		return (-1);
@@ -208,14 +192,10 @@ int Parser::userParaCount()
 
 int Parser::joinParaCount()
 {
-	int		sFlag;
-	int		wFlag;
-	size_t	strSize;
-
-	sFlag = 0;
-	wFlag = 0;
-	strSize = _rawStr.size();
-	for (size_t i = 0; i < strSize; i++)
+	int	sFlag = 0;
+	int	wFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
 	{
 		if (strSize > 4)
 		{
@@ -224,7 +204,7 @@ int Parser::joinParaCount()
 			if (_rawStr[4] != ' ')
 				return (-1);
 		}
-		if (_rawStr[i])
+		if(_rawStr[i])
 		{
 			if (_rawStr[i] == ' ')
 				sFlag++;
@@ -246,14 +226,10 @@ int Parser::joinParaCount()
 
 int Parser::partParaCount()
 {
-	int		sFlag;
-	int		wFlag;
-	size_t	strSize;
-
-	sFlag = 0;
-	wFlag = 0;
-	strSize = _rawStr.size();
-	for (size_t i = 0; i < strSize; i++)
+	int	sFlag = 0;
+	int	wFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
 	{
 		if (strSize > 4)
 		{
@@ -262,7 +238,7 @@ int Parser::partParaCount()
 			if (_rawStr[4] != ' ')
 				return (-1);
 		}
-		if (_rawStr[i])
+		if(_rawStr[i])
 		{
 			if (_rawStr[i] == ' ')
 				sFlag++;
@@ -284,16 +260,11 @@ int Parser::partParaCount()
 
 int Parser::topicParaCount()
 {
-	int		sFlag;
-	int		wFlag;
-	int		colFlag;
-	size_t	strSize;
-
-	sFlag = 0;
-	wFlag = 0;
-	colFlag = 0;
-	strSize = _rawStr.size();
-	for (size_t i = 0; i < strSize; i++)
+	int	sFlag = 0;
+	int	wFlag = 0;
+	int	colFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
 	{
 		if (strSize > 5)
 		{
@@ -302,12 +273,12 @@ int Parser::topicParaCount()
 			if (_rawStr[5] != ' ')
 				return (-1);
 		}
-		if (_rawStr[i])
+		if(_rawStr[i])
 		{
 			if (_rawStr[i] == ' ' && i != 0 && !colFlag)
 			{
 				if (_rawStr[i - 1] == ' ')
-					return (0);
+					return(0);
 				sFlag++;
 			}
 			if ((isalnum(_rawStr[i]) || _rawStr[i] == ':') && i != 0)
@@ -316,15 +287,13 @@ int Parser::topicParaCount()
 					wFlag++;
 			}
 			if (i + 1 <= strSize)
-				if (_rawStr[i] == ':' && _rawStr[i + 1])
+				if (_rawStr[i] == ':'&& _rawStr[i + 1])
 					colFlag++;
 		}
 	}
-	if ((sFlag == 1 && wFlag == 1 && !colFlag) || (sFlag == 2 && wFlag == 2
-			&& colFlag == 1))
+	if ((sFlag == 1 && wFlag == 1 && !colFlag) || (sFlag == 2 && wFlag == 2 && colFlag == 1))
 		return (1);
-	if (sFlag > 2 || wFlag > 2 || colFlag > 1 || (sFlag == 2 && wFlag == 2
-			&& !colFlag))
+	if (sFlag > 2 || wFlag > 2 || colFlag > 1 || (sFlag == 2 && wFlag == 2 && !colFlag))
 		return (0);
 	if ((sFlag == wFlag - 1) || !colFlag)
 		return (-1);
@@ -333,14 +302,10 @@ int Parser::topicParaCount()
 
 int Parser::inviteParaCount()
 {
-	int		sFlag;
-	int		wFlag;
-	size_t	strSize;
-
-	sFlag = 0;
-	wFlag = 0;
-	strSize = _rawStr.size();
-	for (size_t i = 0; i < strSize; i++)
+	int	sFlag = 0;
+	int	wFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
 	{
 		if (strSize > 6)
 		{
@@ -349,7 +314,7 @@ int Parser::inviteParaCount()
 			if (_rawStr[6] != ' ')
 				return (-1);
 		}
-		if (_rawStr[i])
+		if(_rawStr[i])
 		{
 			if (_rawStr[i] == ' ')
 				sFlag++;
@@ -371,16 +336,11 @@ int Parser::inviteParaCount()
 
 int Parser::kickParaCount()
 {
-	int		sFlag;
-	int		wFlag;
-	int		colFlag;
-	size_t	strSize;
-
-	sFlag = 0;
-	wFlag = 0;
-	colFlag = 0;
-	strSize = _rawStr.size();
-	for (size_t i = 0; i < strSize; i++)
+	int	sFlag = 0;
+	int	wFlag = 0;
+	int	colFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
 	{
 		if (strSize > 4)
 		{
@@ -389,12 +349,12 @@ int Parser::kickParaCount()
 			if (_rawStr[4] != ' ')
 				return (-1);
 		}
-		if (_rawStr[i])
+		if(_rawStr[i])
 		{
 			if (_rawStr[i] == ' ' && i != 0 && !colFlag)
 			{
 				if (_rawStr[i - 1] == ' ')
-					return (0);
+					return(0);
 				sFlag++;
 			}
 			if ((isalnum(_rawStr[i]) || _rawStr[i] == ':') && i != 0)
@@ -403,15 +363,13 @@ int Parser::kickParaCount()
 					wFlag++;
 			}
 			if (i + 1 <= strSize)
-				if (_rawStr[i] == ':' && _rawStr[i + 1])
+				if (_rawStr[i] == ':'&& _rawStr[i + 1])
 					colFlag++;
 		}
 	}
-	if ((sFlag == 2 && wFlag == 2 && !colFlag) || (sFlag == 3 && wFlag == 3
-			&& colFlag == 1))
+	if ((sFlag == 1 && wFlag == 1 && !colFlag) || (sFlag == 2 && wFlag == 2 && colFlag == 1))
 		return (1);
-	if (sFlag > 3 || wFlag > 3 || colFlag > 1 || (sFlag == 3 && wFlag == 3
-			&& !colFlag))
+	if (sFlag > 2 || wFlag > 2 || colFlag > 1 || (sFlag == 2 && wFlag == 2 && !colFlag))
 		return (0);
 	if ((sFlag == wFlag - 1) || !colFlag)
 		return (-1);
@@ -420,32 +378,63 @@ int Parser::kickParaCount()
 
 int Parser::quitParaCount()
 {
-	size_t	strSize;
-
-	strSize = _rawStr.size();
+	size_t	strSize = _rawStr.size();
 	if (strSize != 4)
 		return (0);
 	return (1);
 }
-
+///////////////////////////////////////////////WIP!!!!!
 int Parser::modeParaCount()
 {
-	//////////////////WIP
+	int	sFlag = 0;
+	int	wFlag = 0;
+	int	setRemFlag = 0;
+	int	modeFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
+	{
+		if (strSize > 4)
+		{
+			if (strSize == 5 || isalnum(_rawStr[4]))
+				return (0);
+			if (_rawStr[4] != ' ')
+				return (-1);
+		}
+		if(_rawStr[i])
+		{
+			if (_rawStr[i] == ' ' && i != 0 && !setRemFlag)
+			{
+				if (_rawStr[i - 1] == ' ')
+					return(0);
+				sFlag++;
+			}
+			if ((isalnum(_rawStr[i]) || _rawStr[i] == '+' || _rawStr[i] == '-') && i != 0)
+			{
+				if (_rawStr[i - 1] == ' ' && !setRemFlag)
+					wFlag++;
+			}
+			if (i + 1 <= strSize)
+				if (( _rawStr[i] == '+' || _rawStr[i] == '-') && _rawStr[i + 1])
+					setRemFlag++;
+		}
+	}
+	if ((sFlag == 2 && wFlag == 2 && setRemFlag == 1))
+		return (1);
+	if (sFlag > 2 || wFlag > 2 || setRemFlag > 1 || (sFlag == 2 && wFlag == 2 && !setRemFlag))
+		return (0);
+	if ((sFlag == wFlag - 1) || !setRemFlag)
+		return (-1);
 	return (0);
+	/////////////////////////////////////////////////
 }
 
 int Parser::privmsgParaCount()
 {
-	int		sFlag;
-	int		wFlag;
-	int		colFlag;
-	size_t	strSize;
-
-	sFlag = 0;
-	wFlag = 0;
-	colFlag = 0;
-	strSize = _rawStr.size();
-	for (size_t i = 0; i < strSize; i++)
+	int	sFlag = 0;
+	int	wFlag = 0;
+	int	colFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
 	{
 		if (strSize > 7)
 		{
@@ -454,12 +443,12 @@ int Parser::privmsgParaCount()
 			if (_rawStr[7] != ' ')
 				return (-1);
 		}
-		if (_rawStr[i])
+		if(_rawStr[i])
 		{
 			if (_rawStr[i] == ' ' && i != 0 && !colFlag)
 			{
 				if (_rawStr[i - 1] == ' ')
-					return (0);
+					return(0);
 				sFlag++;
 			}
 			if ((isalnum(_rawStr[i]) || _rawStr[i] == ':') && i != 0)
@@ -468,37 +457,46 @@ int Parser::privmsgParaCount()
 					wFlag++;
 			}
 			if (i + 1 <= strSize)
-				if (_rawStr[i] == ':' && _rawStr[i + 1])
+				if (_rawStr[i] == ':'&& _rawStr[i + 1])
 					colFlag++;
 		}
 	}
 	if ((sFlag == 2 && wFlag == 2 && colFlag == 1))
 		return (1);
-	if (sFlag > 2 || wFlag > 2 || colFlag > 1 || (sFlag == 2 && wFlag == 2
-			&& !colFlag))
+	if (sFlag > 2 || wFlag > 2 || colFlag > 1 || (sFlag == 2 && wFlag == 2 && !colFlag))
 		return (0);
 	if ((sFlag == wFlag - 1) || !colFlag)
 		return (-1);
 	return (0);
 }
 
-/// need to modify to deal with ':' params
-std::vector<std::string> Parser::parseStr(std::string str, std::string delim)
+std::vector<std::string> Parser::parseStr(std::string str, std::string delim, std::string strFlag)
 {
-	size_t	start;
-	size_t	i;
-	size_t	len;
-
 	std::vector<std::string> ret;
-	start = 0;
+	size_t	start = 0;
+	size_t j = 0;
 	if (!str.empty())
 	{
-		while (1)
+		while(1)
 		{
-			i = str.find(delim, start);
+			size_t i = str.find(delim, start);
+			j = str.find(strFlag);
 			if (i == std::string::npos)
-				break ;
-			len = i - start;
+				break;
+			if ((j != std::string::npos))
+			{
+				if (i > j)
+				{
+					i = (str.find(strFlag, start));
+					i--;
+					delim = strFlag;
+					size_t len = i - start;
+					ret.push_back(str.substr(start, len));
+					start += (len + delim.size());
+					return (ret);
+				}
+			}
+			size_t len = i - start;
 			ret.push_back(str.substr(start, len));
 			start += (len + delim.size());
 		}
@@ -509,33 +507,30 @@ std::vector<std::string> Parser::parseStr(std::string str, std::string delim)
 
 void Parser::parseStart()
 {
-	//	std::cout << HMAG "----------ParseStart-------------" << std::endl;
+	std::cout << HMAG "----------ParseStart-------------" << std::endl;
 	if (_rawStr.empty())
-		//		std::cout << RED << "_rawStr is empty" << std::endl;
-		if (isRawComm())
+		std::cout << RED << "_rawStr is empty" << std::endl;
+	if (isRawComm())
+	{
+		std::cout << HBLU "-----getCommType-----" << std::endl;
+		std::string	type =  getCommType();
+		std::cout << "Type is: "<< type << std::endl;
+		std::cout << HCYN "-----checkParams-----" << std::endl;
+		int	confirm = checkParams(type);
+		if (confirm == 1)
 		{
-			//		std::cout << HBLU "-----getCommType-----" << std::endl;
-			std::string type = getCommType();
-			//		std::cout << "Type is: "<< type << std::endl;
-			//		std::cout << HCYN "-----checkParams-----" << std::endl;
-			int confirm = checkParams(type);
-			if (confirm == 1)
-			{
-				//			std::cout << "Params: good!" << std::endl;
-				//			std::cout << HGRN "-----parseStr--------" << std::endl;
-				_params = parseStr(_rawStr, " ");
-				for (size_t i = 0; i < _params.size(); i++)      
-					// for testing only
-					std::cout << "[" << _params[i] << "]" << ' '; //
-				std::cout << '\n';                                //
-			}
-			if (confirm == -1)
-				std::cout << RED << type << " 461 ERR_NEEDMOREPARAMS :Not enough parameters" << std::endl;
-			if (confirm == 0)
-				std::cout << RED << type << " 420 ERR_INVALIDPARAMS :Invalid parameters" << std::endl;
-					// invalid params
-		}                                                                                             
-			//(other error i just made up cuz why not)
-		else
-			std::cout << HYEL "_rawStr: " << _rawStr << " is not a command." << std::endl;
+			std::cout << "Params: good!" << std::endl;
+			std::cout << HGRN "-----parseStr--------" << std::endl;
+			_params = parseStr(_rawStr, " ", ":");
+			for (size_t i = 0 ; i < _params.size() ; i++) //for testing only
+				std::cout << "[" << _params[i] << "]" << ' ';//
+			std::cout << '\n';//
+		}
+		if(confirm == -1)
+			std::cout << RED << type << " 461 ERR_NEEDMOREPARAMS :Not enough parameters" << std::endl;
+		if (confirm == 0)
+			std::cout << RED << type << " 420 ERR_INVALIDPARAMS :Invalid parameters" << std::endl;// invalid params 
+	}																							//(other error i just made up cuz why not)
+	else
+		std::cout << HYEL "_rawStr: " << _rawStr << " is not a command." << std::endl;
 }
