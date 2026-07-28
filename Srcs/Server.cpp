@@ -11,13 +11,15 @@
 /* ************************************************************************** */
 
 #include "../Includes/Client.hpp"
-#include "../Includes/Server.hpp"
 #include "../Includes/Replies.hpp"
+#include "../Includes/Server.hpp"
 #include <sstream>
 
 // rosa work on parsing here, dont touch
 void server::processLine(client &c, std::string line)
 {
+	size_t	colon;
+
 	std::cout << "Client " << c.get_fd() << " sent line: [" << line << "]" << std::endl;
 	// TEMP TEST FOR PASS
 	if (line.substr(0, 5) == "PASS ")
@@ -28,7 +30,7 @@ void server::processLine(client &c, std::string line)
 		handlePass(c, params);
 	}
 	// TEMP TEST FOR NICK
-	if(line.substr(0, 5) == "NICK ")
+	if (line.substr(0, 5) == "NICK ")
 	{
 		std::vector<std::string> params;
 		params.push_back("NICK");
@@ -49,7 +51,7 @@ void server::processLine(client &c, std::string line)
 	if (line.substr(0, 8) == "PRIVMSG ")
 	{
 		std::string rest = line.substr(8);
-		size_t colon = rest.find(':');
+		colon = rest.find(':');
 		std::string target = rest.substr(0, colon - 1);
 		std::string msg = rest.substr(colon + 1);
 		std::vector<std::string> params;
@@ -60,7 +62,7 @@ void server::processLine(client &c, std::string line)
 	}
 }
 
-// queue a message for a client, dont send it here, poll() will send it when ready
+// queue a message for a client, dont send it here,poll() will send it when ready
 void server::sendToClient(int fd, std::string message)
 {
 	client &c = this->clients.find(fd)->second;
@@ -138,22 +140,22 @@ void server::handleQuit(client &c)
 		if (fds[i].fd == c.get_fd())
 		{
 			disconnectClient(i);
-			break;
+			break ;
 		}
 	}
 }
 
 void server::handlePass(client &c, std::vector<std::string> params)
 {
-	if(params.size() < 2)
+	if (params.size() < 2)
 	{
 		sendToClient(c.get_fd(), err_needmoreparams("*"));
-		return;
+		return ;
 	}
-	if(params[1] != this->password)
+	if (params[1] != this->password)
 	{
 		sendToClient(c.get_fd(), err_passwdmismatch());
-		return;
+		return ;
 	}
 	else
 		c.set_auth(true);
@@ -164,14 +166,15 @@ void server::handleNick(client &c, std::vector<std::string> params)
 	if (params.size() < 2)
 	{
 		sendToClient(c.get_fd(), err_nonicknamegiven("*"));
-		return;
+		return ;
 	}
-	for (std::map<int, client>::iterator it = clients.begin(); it != clients.end(); it++)
+	for (std::map<int,
+		client>::iterator it = clients.begin(); it != clients.end(); it++)
 	{
 		if (it->second.get_nickname() == params[1])
 		{
 			sendToClient(c.get_fd(), err_nicknameinuse("*"));
-			return;
+			return ;
 		}
 	}
 	c.set_nickname(params[1]);
@@ -179,47 +182,50 @@ void server::handleNick(client &c, std::vector<std::string> params)
 
 void server::handleUser(client &c, std::vector<std::string> params)
 {
-	if(params.size() < 5)
+	if (params.size() < 5)
 	{
 		sendToClient(c.get_fd(), err_needmoreparams("*"));
-		return;
+		return ;
 	}
-	if(c.is_registered())
+	if (c.is_registered())
 	{
 		sendToClient(c.get_fd(), err_alreadyregistred("*"));
-		return;
+		return ;
 	}
 	c.set_username(params[1]);
 }
 
 void server::handlePrivmsg(client &c, std::vector<std::string> params)
 {
-	if(params.size() < 2)
+	client	*target;
+
+	if (params.size() < 2)
 	{
 		sendToClient(c.get_fd(), err_norecipient("*", "PRIVMSG"));
-		return;
+		return ;
 	}
-	if(params.size() < 3)
+	if (params.size() < 3)
 	{
 		sendToClient(c.get_fd(), err_norecipient("*", "PRIVMSG"));
-		return;
+		return ;
 	}
-	client *target = NULL;
-	
-	for(std::map<int, client>::iterator it = clients.begin(); it != clients.end(); it++)
+	target = NULL;
+	for (std::map<int,
+		client>::iterator it = clients.begin(); it != clients.end(); it++)
 	{
-		if(it->second.get_nickname() == params[1])
+		if (it->second.get_nickname() == params[1])
 		{
 			target = &it->second;
-			break;
+			break ;
 		}
 	}
-	if(!target)
+	if (!target)
 	{
 		sendToClient(c.get_fd(), err_nosuchnick(params[1]));
-		return;
+		return ;
 	}
-	sendToClient(target->get_fd(), ":" + c.get_nickname() + " PRIVMSG " + params[1] + " :" + params[2] + "\r\n");
+	sendToClient(target->get_fd(), ":" + c.get_nickname() + " PRIVMSG "
+		+ params[1] + " :" + params[2] + "\r\n");
 }
 
 void server::run()
@@ -240,11 +246,12 @@ void server::run()
 				// nothing queued for this client, dont bother calling send
 				if (!check_buffer.empty())
 				{
-					int byteSent = send(fds[i].fd, check_buffer.c_str(), check_buffer.size(), 0);
+					int byteSent = send(fds[i].fd, check_buffer.c_str(),
+							check_buffer.size(), 0);
 					if (byteSent <= 0)
 					{
 						disconnectClient(i);
-						continue;
+						continue ;
 					}
 					else
 					{
@@ -252,7 +259,7 @@ void server::run()
 						check_buffer.erase(0, byteSent);
 						b.set_outBuffer(check_buffer);
 						// fully drained, stop watching for writable so poll() doesnt spam us
-						if(check_buffer.empty())
+						if (check_buffer.empty())
 							this->fds[i].events = POLLIN;
 					}
 				}
@@ -296,6 +303,8 @@ void server::run()
 							std::string line = full.substr(0, pos);
 							full.erase(0, pos + 2);
 							processLine(c, line);
+							// Parser input(line);
+							// line.parseStart();
 							// tempo, just to test the send pipeline, echoes back what u typed
 							sendToClient(c.get_fd(), line + "\r\n");
 						}
