@@ -45,6 +45,19 @@ void server::processLine(client &c, std::string line)
 			params.push_back(token);
 		handleUser(c, params);
 	}
+	// TEMP TEST FOR PRIVMSG
+	if (line.substr(0, 8) == "PRIVMSG ")
+	{
+		std::string rest = line.substr(8);
+		size_t colon = rest.find(':');
+		std::string target = rest.substr(0, colon - 1);
+		std::string msg = rest.substr(colon + 1);
+		std::vector<std::string> params;
+		params.push_back("PRIVMSG");
+		params.push_back(target);
+		params.push_back(msg);
+		handlePrivmsg(c, params);
+	}
 }
 
 // queue a message for a client, dont send it here, poll() will send it when ready
@@ -177,6 +190,36 @@ void server::handleUser(client &c, std::vector<std::string> params)
 		return;
 	}
 	c.set_username(params[1]);
+}
+
+void server::handlePrivmsg(client &c, std::vector<std::string> params)
+{
+	if(params.size() < 2)
+	{
+		sendToClient(c.get_fd(), err_norecipient("*", "PRIVMSG"));
+		return;
+	}
+	if(params.size() < 3)
+	{
+		sendToClient(c.get_fd(), err_norecipient("*", "PRIVMSG"));
+		return;
+	}
+	client *target = NULL;
+	
+	for(std::map<int, client>::iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		if(it->second.get_nickname() == params[1])
+		{
+			target = &it->second;
+			break;
+		}
+	}
+	if(!target)
+	{
+		sendToClient(c.get_fd(), err_nosuchnick(params[1]));
+		return;
+	}
+	sendToClient(target->get_fd(), ":" + c.get_nickname() + " PRIVMSG " + params[1] + " :" + params[2] + "\r\n");
 }
 
 void server::run()

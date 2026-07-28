@@ -53,6 +53,7 @@ class server
 		void handlePass(client &c, std::vector<std::string> params);
 		void handleNick(client &c, std::vector<std::string> params);
 		void handleUser(client &c, std::vector<std::string> params);
+		void handlePrivmsg(client &c, std::vector<std::string> params);
 
 
 };
