@@ -357,9 +357,9 @@ int Parser::kickParaCount()
 					colFlag++;
 		}
 	}
-	if ((sFlag == 1 && wFlag == 1 && !colFlag) || (sFlag == 2 && wFlag == 2 && colFlag == 1))
+	if ((sFlag == 2 && wFlag == 2 && !colFlag) || (sFlag == 3 && wFlag == 3 && colFlag == 1))
 		return (1);
-	if (sFlag > 2 || wFlag > 2 || colFlag > 1 || (sFlag == 2 && wFlag == 2 && !colFlag))
+	if (sFlag > 3 || wFlag > 3 || colFlag > 1 || (sFlag == 3 && wFlag == 3 && !colFlag))
 		return (0);
 	if ((sFlag == wFlag - 1) || !colFlag)
 		return (-1);
@@ -368,18 +368,49 @@ int Parser::kickParaCount()
 
 int Parser::quitParaCount()
 {
+	int	sFlag = 0;
+	int	wFlag = 0;
+	int	colFlag = 0;
 	size_t	strSize = _rawStr.size();
-	if (strSize != 4)
+	for (size_t i = 0; i < strSize ; i++)
+	{
+		if (strSize > 4)
+		{
+			if (strSize == 5 || isalnum(_rawStr[4]))
+				return (0);
+			if (_rawStr[4] != ' ')
+				return (-1);
+		}
+		if(_rawStr[i])
+		{
+			if (_rawStr[i] == ' ' && i != 0 && !colFlag)
+			{
+				if (_rawStr[i - 1] == ' ')
+					return(0);
+				sFlag++;
+			}
+			if ((isalnum(_rawStr[i]) || _rawStr[i] == ':') && i != 0)
+			{
+				if (_rawStr[i - 1] == ' ' && !colFlag)
+					wFlag++;
+			}
+			if (i + 1 <= strSize)
+				if (_rawStr[i] == ':'&& _rawStr[i + 1])
+					colFlag++;
+		}
+	}
+	if ((!sFlag && !wFlag && !colFlag) || (sFlag == 1 && wFlag == 1 && colFlag == 1))
+		return (1);
+	if (sFlag > 2 || wFlag > 2 || colFlag > 1)
 		return (0);
-	return (1);
+	return (0);
 }
-///////////////////////////////////////////////WIP!!!!!
+
 int Parser::modeParaCount()
 {
 	int	sFlag = 0;
 	int	wFlag = 0;
 	int	setRemFlag = 0;
-//	int	modeFlag = 0;
 	size_t	strSize = _rawStr.size();
 	for (size_t i = 0; i < strSize ; i++)
 	{
@@ -415,7 +446,6 @@ int Parser::modeParaCount()
 	if ((sFlag == wFlag - 1) || !setRemFlag)
 		return (-1);
 	return (0);
-	/////////////////////////////////////////////////
 }
 
 int Parser::privmsgParaCount()
@@ -494,33 +524,61 @@ std::vector<std::string> Parser::parseStr(std::string str, std::string delim, st
 	}
 	return (ret);
 }
+//get specific parameter by index
+std::string Parser::getParam(size_t	i)
+{
+	if (i <= _params.size())
+		return(_params[i]);
+	else
+		return (NULL);
+}
+//4 debugging
+void	Parser::printVector(std::vector<std::string> vec)
+{
+	for (size_t i = 0 ; i < vec.size() ; i++)
+		std::cout << "[" << vec[i] << "]" << ' ';
+	std::cout << '\n';
+}
+//confirmation after the parse
+int	Parser::getIsCommConfirm()
+{
+	return (_isCommand);
+}
+
+std::vector<std::string> Parser::getParamVec()
+{
+	return (_params);
+}
 
 void Parser::parseStart()
 {
-//	std::cout << HMAG "----------ParseStart-------------" << std::endl;
+	std::cout << HMAG "------------parseStart---------------" << std::endl;
 	if (_rawStr.empty())
-//		std::cout << RED << "_rawStr is empty" << std::endl;
+		std::cout << RED << "_rawStr is empty" << std::endl;
 	if (isRawComm())
 	{
-//		std::cout << HBLU "-----getCommType-----" << std::endl;
+		_isCommand = 1;
 		std::string	type =  getCommType();
-//		std::cout << "Type is: "<< type << std::endl;
-//		std::cout << HCYN "-----checkParams-----" << std::endl;
 		int	confirm = checkParams(type);
 		if (confirm == 1)
 		{
-//			std::cout << "Params: good!" << std::endl;
-//			std::cout << HGRN "-----parseStr--------" << std::endl;
 			_params = parseStr(_rawStr, " ", ":");
-//			for (size_t i = 0 ; i < _params.size() ; i++) //for testing only
-//				std::cout << "[" << _params[i] << "]" << ' ';//
-//			std::cout << '\n';//
 		}
 		if(confirm == -1)
 			std::cout << RED << type << " 461 ERR_NEEDMOREPARAMS :Not enough parameters" << std::endl;
 		if (confirm == 0)
 			std::cout << RED << type << " 420 ERR_INVALIDPARAMS :Invalid parameters" << std::endl;// invalid params 
-	}																							//(other error i just made up cuz why not)
+	}
 	else
 		std::cout << HYEL "_rawStr: " << _rawStr << " is not a command." << std::endl;
+}
+
+void	Parser::printStatus()
+{
+	std::cout << MAG"\n+++++++++++" HMAG "COMMAND" MAG "+" HMAG "INFO" MAG "++++++++++++++" reset << std::endl;
+	std::cout << HMAG"\nrawStr:" MAG " [" HMAG << _rawStr << MAG "]" reset << std::endl;
+	std::cout << HMAG"\nisCommand:" MAG "  [" HMAG<< _isCommand << MAG "]" reset << std::endl;
+	std::cout << MAG"\n-------------" HMAG "PARAMETERS" MAG "--------------" HMAG << std::endl;
+	printVector(_params);
+	std::cout << MAG"\n+++++++++++++++++++++++++++++++++++++" reset << std::endl;
 }
