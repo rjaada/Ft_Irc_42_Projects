@@ -24,13 +24,13 @@ std::string Parser::getRawStr()
 	return (_rawStr);
 }
 
-std::string	commList[] = {"PASS", "NICK", "USER", "JOIN", "PART", "TOPIC", "INVITE", "KICK", "QUIT", "MODE", "PRIVMSG"};
+std::string	commList[] = {"PASS", "NICK", "USER", "JOIN", "PART", "TOPIC", "INVITE", "KICK", "QUIT", "MODE", "PRIVMSG", "OPER"};
 
 int	Parser::isRawComm()
 {
 	if (_rawStr == "Empty")
 		return (0);
-	for (int i = 0; i < 11; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		std::size_t	found = _rawStr.find(commList[i]);
 		if ((found != std::string::npos) && !(found > commList[i].size()))
@@ -45,7 +45,7 @@ int	Parser::isRawComm()
 
 std::string	Parser::getCommType()
 {
-	for (int i = 0; i < 11; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		std::size_t	found = _rawStr.find(commList[i]);
 		if ((found != std::string::npos) && !(found > commList[i].size()))
@@ -56,11 +56,11 @@ std::string	Parser::getCommType()
 
 int	Parser::checkParams(std::string	commType)
 {
-	int	(Parser::*paramType[11])() = {&Parser::passParaCount, &Parser::nickParaCount, &Parser::userParaCount, 
+	int	(Parser::*paramType[12])() = {&Parser::passParaCount, &Parser::nickParaCount, &Parser::userParaCount, 
 				&Parser::joinParaCount, &Parser::partParaCount, &Parser::topicParaCount, &Parser::inviteParaCount, &Parser::kickParaCount, 
-				&Parser::quitParaCount, &Parser::modeParaCount, &Parser::privmsgParaCount};
+				&Parser::quitParaCount, &Parser::modeParaCount, &Parser::privmsgParaCount, &Parser::operParaCount};
 
-	for (int i = 0; i < 11; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		if (commList[i] == commType)
 		{
@@ -486,6 +486,40 @@ int Parser::privmsgParaCount()
 	if (sFlag > 2 || wFlag > 2 || colFlag > 1 || (sFlag == 2 && wFlag == 2 && !colFlag))
 		return (0);
 	if ((sFlag == wFlag - 1) || !colFlag)
+		return (-1);
+	return (0);
+}
+
+int Parser::operParaCount()
+{
+	int	sFlag = 0;
+	int	wFlag = 0;
+	size_t	strSize = _rawStr.size();
+	for (size_t i = 0; i < strSize ; i++)
+	{
+		if (strSize > 4)
+		{
+			if (strSize == 5 || isalnum(_rawStr[4]))
+				return (0);
+			if (_rawStr[4] != ' ')
+				return (-1);
+		}
+		if(_rawStr[i])
+		{
+			if (_rawStr[i] == ' ')
+				sFlag++;
+			if (isalnum(_rawStr[i]) && i != 0)
+			{
+				if (_rawStr[i - 1] == ' ')
+					wFlag++;
+			}
+		}
+	}
+	if (sFlag == 2 && wFlag == 2)
+		return (1);
+	if (sFlag > 2)
+		return (0);
+	if ((sFlag == 2 && wFlag != 2) || (sFlag != 2 && wFlag != 2))
 		return (-1);
 	return (0);
 }

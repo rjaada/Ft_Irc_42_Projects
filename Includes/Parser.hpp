@@ -41,6 +41,8 @@ class Parser
 		int							quitParaCount();
 		int							modeParaCount();
 		int							privmsgParaCount();
+		int							operParaCount();
+		
 
 		int							getIsCommConfirm(); //confirmation of command after the parse
 		std::string					getParam(size_t	i); //get specific parameter by index
