@@ -17,7 +17,8 @@
 #include <sstream>
 
 // rosa work on parsing here, dont touch
-void server::processLine(client &c, std::string line)
+void server::processLine(client &c, std::string line
+	/*, std::vector<Channel> &channels */) 
 {
 	Parser input(line);
 	input.parseStart();
