@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rjaada <rjaada@student.42.fr>              #+#  +:+       +#+        */
+/*   By: romorale <romorale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-07-20 13:55:21 by rjaada            #+#    #+#             */
-/*   Updated: 2026-07-20 13:55:21 by rjaada           ###   ########.fr       */
+/*   Created: 2026/07/20 13:55:21 by rjaada            #+#    #+#             */
+/*   Updated: 2026/08/01 16:36:04 by romorale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,8 +302,16 @@ void server::run()
 						{
 							std::string line = full.substr(0, pos);
 							full.erase(0, pos + 2);
+							Parser input(line);
+							if (input.getIsCommConfirm() == 1)
+							{
+								//commandidentifier std::string type = input.getParam(1);
+								if (type == "PART")
+
+							}
+							
 							processLine(c, line);
-							// Parser input(line);
+							
 							// line.parseStart();
 							// tempo, just to test the send pipeline, echoes back what u typed
 							sendToClient(c.get_fd(), line + "\r\n");

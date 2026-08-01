@@ -59,7 +59,7 @@ class Channel
 		void						addRemKickerUser(std::string kUser);
 		void						changeModeI(); //change invite only requierment restriction
 
-		void						newKey(size_t newKey);
+		void						newKey(std::string newKey);
 		void						changeModek(); //change key requierment restriction
 
 		void						joinChannel(std::string	newUser);
