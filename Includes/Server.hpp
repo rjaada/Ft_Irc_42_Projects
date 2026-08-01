@@ -54,6 +54,7 @@ class server
 		void handleNick(client &c, std::vector<std::string> params);
 		void handleUser(client &c, std::vector<std::string> params);
 		void handlePrivmsg(client &c, std::vector<std::string> params);
+		void tryCompleteRegistration(client &c);
 
 
 };

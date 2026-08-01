@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../Includes/Client.hpp"
+#include "../Includes/Parser.hpp"
 #include "../Includes/Replies.hpp"
 #include "../Includes/Server.hpp"
 #include <sstream>
@@ -18,51 +19,35 @@
 // rosa work on parsing here, dont touch
 void server::processLine(client &c, std::string line)
 {
-	size_t	colon;
-
-	std::cout << "Client " << c.get_fd() << " sent line: [" << line << "]" << std::endl;
-	// TEMP TEST FOR PASS
-	if (line.substr(0, 5) == "PASS ")
+	Parser input(line);
+	input.parseStart();
+	if (input.getIsCommConfirm() == 1)
 	{
-		std::vector<std::string> params;
-		params.push_back("PASS");
-		params.push_back(line.substr(5));
-		handlePass(c, params);
+		std::string type = input.getCommType();
+		std::vector<std::string> params = input.getParamVec();
+		if (type == "PASS")
+			handlePass(c, params);
+		else if (type == "NICK")
+			handleNick(c, params);
+		else if (type == "USER")
+			handleUser(c, params);
+		else if (type == "PRIVMSG")
+			handlePrivmsg(c, params);
+		else if (type == "QUIT")
+			handleQuit(c);
+		/*else if(type == "JOIN")
+			handleJoin();
+		else if(type == "PART")
+			handlePart();*/
 	}
-	// TEMP TEST FOR NICK
-	if (line.substr(0, 5) == "NICK ")
-	{
-		std::vector<std::string> params;
-		params.push_back("NICK");
-		params.push_back(line.substr(5));
-		handleNick(c, params);
-	}
-	// TEMP TEST FOR USER
-	if (line.substr(0, 5) == "USER ")
-	{
-		std::vector<std::string> params;
-		std::istringstream iss(line);
-		std::string token;
-		while (iss >> token)
-			params.push_back(token);
-		handleUser(c, params);
-	}
-	// TEMP TEST FOR PRIVMSG
-	if (line.substr(0, 8) == "PRIVMSG ")
-	{
-		std::string rest = line.substr(8);
-		colon = rest.find(':');
-		std::string target = rest.substr(0, colon - 1);
-		std::string msg = rest.substr(colon + 1);
-		std::vector<std::string> params;
-		params.push_back("PRIVMSG");
-		params.push_back(target);
-		params.push_back(msg);
-		handlePrivmsg(c, params);
-	}
+	else if (input.getIsCommConfirm() == -1
+		|| input.getIsCommConfirm() == -2)
+		sendToClient(c.get_fd(), err_needmoreparams(c.get_nickname()));
+	else
+		sendToClient(c.get_fd(), err_cmdnotfound(c.get_nickname(),
+				line.substr(0, line.find(' '))));
 }
 
-// queue a message for a client, dont send it here,poll() will send it when ready
 void server::sendToClient(int fd, std::string message)
 {
 	client &c = this->clients.find(fd)->second;
@@ -178,6 +163,7 @@ void server::handleNick(client &c, std::vector<std::string> params)
 		}
 	}
 	c.set_nickname(params[1]);
+	tryCompleteRegistration(c);
 }
 
 void server::handleUser(client &c, std::vector<std::string> params)
@@ -193,6 +179,20 @@ void server::handleUser(client &c, std::vector<std::string> params)
 		return ;
 	}
 	c.set_username(params[1]);
+	tryCompleteRegistration(c);
+}
+
+// PASS + NICK + USER all done, but only fire the welcome once
+void server::tryCompleteRegistration(client &c)
+{
+	if (c.is_registered())
+		return ;
+	if (c.is_authenticated() && !c.get_nickname().empty()
+		&& !c.get_username().empty())
+	{
+		c.set_reg(true);
+		sendToClient(c.get_fd(), rpl_welcome(c.get_nickname()));
+	}
 }
 
 void server::handlePrivmsg(client &c, std::vector<std::string> params)
@@ -290,7 +290,8 @@ void server::run()
 					}
 					else
 					{
-						client &c = this->clients.find(fds[i].fd)->second;
+						int clientFd = fds[i].fd;
+						client &c = this->clients.find(clientFd)->second;
 						c.set_buffer(c.get_buffer() + buffer);
 
 						// recv can give partial lines or multiple lines at once
@@ -302,21 +303,19 @@ void server::run()
 						{
 							std::string line = full.substr(0, pos);
 							full.erase(0, pos + 2);
-							Parser input(line);
-							if (input.getIsCommConfirm() == 1)
-							{
-								//commandidentifier std::string type = input.getParam(1);
-								if (type == "PART")
-
-							}
-							
 							processLine(c, line);
-							
-							// line.parseStart();
-							// tempo, just to test the send pipeline, echoes back what u typed
-							sendToClient(c.get_fd(), line + "\r\n");
+							// processLine may have run QUIT and erased this
+							// client already (disconnectClient) -- c is a
+							// dangling reference into freed memory now, stop
+							if (this->clients.find(clientFd)
+								== this->clients.end())
+							{
+								i--;
+								break ;
+							}
 						}
-						c.set_buffer(full);
+						if (this->clients.find(clientFd) != this->clients.end())
+							c.set_buffer(full);
 					}
 				}
 			}
