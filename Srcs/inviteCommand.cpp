@@ -42,19 +42,14 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 		int i = getFromServChanListPos(vec, channelName);
 		if (i != -1)
 		{
-			if (vec[i].isModeI())
-			{
-				std::cout <<  HBLU "[" HCYN  << channelName << HBLU "]" HCYN  " channel is invite only!" << std::endl;
-				return ;
-			}
-			if (vec[i].isModeK())
-			{
-				std::cout <<  HBLU "[" HCYN  << channelName << HBLU "]" HCYN  " channel is key restricted!" << std::endl;
-				return ;
-			}
 			if (findInChanUserList(vec[i].getUsers(), cUser))
 			{
-				vec[i].joinChannel(userName);
+				if (vec[i].isModeK())
+				{
+					std::cout <<  HBLU "[" HCYN  << channelName << HBLU "]" HCYN  " channel is key restricted!" << std::endl;
+					return ;
+				}
+				//instead of using join again, create handler in channel for invite specifically H3Y!
 				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " was invited to "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel by user: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN  << std::endl;
 				return ;
 			}
@@ -63,9 +58,8 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 				std::cout << HCYN << "User: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN " can't invite anybody because they are not in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel!" << std::endl;
 				return ;
 			}
-
 		}
+		vec[i].printStatus();
 	}
-
 }
 

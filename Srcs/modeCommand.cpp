@@ -62,7 +62,7 @@ void        modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::s
 				return ;
 			}
 		}
+		vec[i].printStatus();
 	}
-
 }
 

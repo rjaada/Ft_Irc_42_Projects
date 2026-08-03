@@ -675,6 +675,7 @@ void Parser::parseStart()
 	int	confirm;
 
 	std::cout << HMAG "------------parseStart---------------" << std::endl;
+	std::cout << HMAG "raw input: " << _rawStr << std::endl;
 	if (_rawStr.empty())
 		std::cout << RED << "_rawStr is empty" << std::endl;
 	if (isRawComm())

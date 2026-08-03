@@ -66,7 +66,7 @@ void	topicCommandExec(std::vector<Channel> &vec, std::string userName, std::stri
 			else
 				std::cout << HCYN << "User: " HBLU "[" HCYN << userName <<  HBLU "]" HCYN  " cant get get the topic if not in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN << std::endl;
 		}
+		vec[i].printStatus();
 	}
-
 }
 

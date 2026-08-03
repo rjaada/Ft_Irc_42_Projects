@@ -44,6 +44,7 @@ void	newChannel(std::vector<Channel> &vec, std::string userName,
 		newChannel.becomeChannelOper(userName);
 		vec.push_back(newChannel);
 		std::cout << HBLU "[" HCYN << channelName << HBLU "]" HCYN " channel created by " HBLU "[" HCYN << userName << HBLU "]" HCYN " !" << std::endl;
+		newChannel.printStatus();
 	}
 }
 // username is the one joining, sometimes need key, sometimes its ignored
@@ -76,7 +77,6 @@ void	joinCommandExec(std::vector<Channel> &vec, std::string userName,
 				}
 			}
 			vec[i].joinChannel(userName);
-			vec[i].printStatus();
 		}
 	}
 }

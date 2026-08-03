@@ -49,7 +49,9 @@ void    operKickUser(std::vector<Channel> &vec, std::string userName, std::strin
 		}
 		else
 			std::cout << HCYN << "User: "  HBLU "[" HCYN << oper << HBLU "]" HCYN  " not operator of "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel!" << std::endl;
+		vec[i].printStatus();
 	}
+
 }
 
 void        kickCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string oper)

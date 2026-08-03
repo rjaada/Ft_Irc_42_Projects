@@ -44,6 +44,7 @@ void    leaveChannel(std::vector<Channel> &vec, std::string userName, std::strin
 		}
 		else
 			std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " not in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel!" << std::endl;
+		vec[i].printStatus();
 	}
 
 }

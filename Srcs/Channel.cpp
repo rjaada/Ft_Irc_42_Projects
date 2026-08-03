@@ -174,6 +174,8 @@ void	Channel::removeChannelOper(std::string user)
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " is not even an operator in the channel! Can't remove operator status!" << std::endl;
 }
 
+// H3Y!, //instead of using join again, create handler in channel for invite specifically
+
 void	Channel::joinChannel(std::string newUser)
 {
 	std::cout << HYEL << "--- In Channel::joinChannel ---" << std::endl;
