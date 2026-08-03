@@ -1,0 +1,27 @@
+#ifndef PARTCOMMAND_HPP
+# define PARTCOMMAND_HPP
+# include "Channel.hpp"
+
+class partCommand
+{
+	private:
+
+		std::string	_commType;
+		std::string	_rawStr;
+	
+	public:
+
+		partCommand(std::string type, std::string rawStr);
+		partCommand(const partCommand &other);
+		partCommand &operator=(const partCommand &other);
+		~partCommand();
+
+		std::string			getRawStr();
+		std::string			getCommType();
+
+};
+
+void	leaveChannel(std::vector<Channel> &vec, std::string userName, std::string channelName);
+void	partCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName);
+
+#endif

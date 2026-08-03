@@ -3,6 +3,8 @@
 # include <iostream>
 # include <string>
 # include <vector>
+# include <cstdlib>
+# include <unistd.h>
 # include "Colors.hpp"
 
 class Channel
@@ -46,29 +48,25 @@ class Channel
 		void						removeFromVec(std::vector<std::string> &vec, std::string rem); //remove from vector
 		void						printVector(std::vector<std::string> vec);
 
-		void						newTopic(std::string newTopic);
-		void						changeModeT(); //change topic editing restriction
-
-		void						addRemOper(std::string oper); //
-		void						changeModeO(); //change operartor of channel
-
-		void						newLimit(size_t newlimit);
-		void						changeModeL(); //change user limit restriction
-
-		void						addRemUser(std::string user);
-		void						addRemKickerUser(std::string kUser);
-		void						changeModeI(); //change invite only requierment restriction
-
-		void						newKey(std::string newKey);
-		void						changeModek(); //change key requierment restriction
-
 		void						joinChannel(std::string	newUser);
 		void						partFromChannel(std::string user);
 		void						kickFromChannel(std::string user);
 		void						becomeChannelOper(std::string user);
 		void						removeChannelOper(std::string user);
+		void						changeChannelTopic(std::string newTopic);
+
+		void						handleMode(std::string mode, std::string param);
+		void						handleModeI(std::string mode);
+		void						handleModeT(std::string mode);
+		void						handleModeK(std::string mode, std::string key);
+		void						handleModeO(std::string mode, std::string newOper);
+		void						handleModeL(std::string mode, std::string limit);
 
 		void						printStatus();
 };
+
+int	getFromServChanListPos(std::vector<Channel> &vec, std::string find);
+int	findInServChanList(std::vector<Channel> vec, std::string find);
+int	findInChanUserList(std::vector<std::string> vec, std::string find);
 
 #endif
