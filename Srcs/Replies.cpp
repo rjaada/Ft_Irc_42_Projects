@@ -29,6 +29,46 @@ std::string err_nosuchnick(std::string target)
 	return (":ircserv 401 " + target + " :No such nick/channel\r\n");
 }
 
+std::string err_cannotsendtochan(std::string target)
+{
+	return (":ircserv 404 " + target + " :Cannot send to channel\r\n");
+}
+
+// JOIN
+std::string err_inviteonlychan(std::string channel)
+{
+	return (":ircserv 473 " + channel + " :Cannot join channel (+i)\r\n");
+}
+
+std::string err_badchannelkey(std::string channel)
+{
+	return (":ircserv 475 " + channel + " :Cannot join channel (+k)\r\n");
+}
+
+std::string rpl_notopic(std::string nick, std::string channel)
+{
+	return (":ircserv 331 " + nick + " " + channel + " :No topic is set\r\n");
+}
+
+std::string rpl_topic(std::string nick, std::string channel,
+	std::string topic)
+{
+	return (":ircserv 332 " + nick + " " + channel + " :" + topic + "\r\n");
+}
+
+std::string rpl_namreply(std::string nick, std::string channel,
+	std::string names)
+{
+	return (":ircserv 353 " + nick + " = " + channel + " :" + names
+		+ "\r\n");
+}
+
+std::string rpl_endofnames(std::string nick, std::string channel)
+{
+	return (":ircserv 366 " + nick + " " + channel
+		+ " :End of /NAMES list\r\n");
+}
+
 // REGISTRATION
 std::string rpl_welcome(std::string target)
 {

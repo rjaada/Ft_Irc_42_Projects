@@ -20,6 +20,17 @@
 std::string err_norecipient(std::string target, std::string command);
 std::string err_notexttosend(std::string target);
 std::string err_nosuchnick(std::string target);
+std::string err_cannotsendtochan(std::string target);
+
+// JOIN
+std::string err_inviteonlychan(std::string channel);
+std::string err_badchannelkey(std::string channel);
+std::string rpl_notopic(std::string nick, std::string channel);
+std::string rpl_topic(std::string nick, std::string channel,
+	std::string topic);
+std::string rpl_namreply(std::string nick, std::string channel,
+	std::string names);
+std::string rpl_endofnames(std::string nick, std::string channel);
 
 // REGISTRATION
 std::string rpl_welcome(std::string target);

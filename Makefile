@@ -7,6 +7,13 @@ SRC =	main.cpp\
 		Client.cpp\
 		Replies.cpp\
 		Parser.cpp\
+		Channel.cpp\
+		joinCommand.cpp\
+		partCommand.cpp\
+		kickCommand.cpp\
+		inviteCommand.cpp\
+		topicCommand.cpp\
+		modeCommand.cpp\
 
 OBJS	= $(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
 

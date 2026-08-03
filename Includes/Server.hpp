@@ -13,6 +13,7 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+# include "Channel.hpp"
 # include "Client.hpp"
 # include <arpa/inet.h>
 # include <cstring>
@@ -33,6 +34,7 @@ class server
 	int nfds;                      // how many fds actually used in fds[]
 	pollfd fds[100];               // all fds we poll on, slot 0 always the listening socket
 	std::map<int, client> clients; // fd -> client, quick lookup by fd
+	std::vector<Channel> channels;
 	sockaddr_in serverAdress;
 	int port;
 	std::string password;
@@ -45,15 +47,18 @@ class server
 	~server();
 
 	void run();
-	void processLine(client &c, std::string line
-		/*, std::vector<Channel> &channels */);
+	void processLine(client &c, std::string line);
 	void sendToClient(int fd, std::string message);
 	void disconnectClient(int index);
 	void handleQuit(client &c);
 	void handlePass(client &c, std::vector<std::string> params);
 	void handleNick(client &c, std::vector<std::string> params);
 	void handleUser(client &c, std::vector<std::string> params);
+	void handleJoin(client &c, std::vector<std::string> params);
 	void handlePrivmsg(client &c, std::vector<std::string> params);
+	void handlePrivmsgChannel(client &c, std::string channelName,
+		std::string text);
+	int findFdByNickname(std::string nickname);
 	void tryCompleteRegistration(client &c);
 };
 

@@ -10,15 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../Includes/Channel.hpp"
 #include "../Includes/Client.hpp"
 #include "../Includes/Parser.hpp"
 #include "../Includes/Replies.hpp"
 #include "../Includes/Server.hpp"
+#include "../Includes/joinCommand.hpp"
+#include "../Includes/partCommand.hpp"
+#include "../Includes/kickCommand.hpp"
+#include "../Includes/inviteCommand.hpp"
+#include "../Includes/topicCommand.hpp"
+#include "../Includes/modeCommand.hpp"
 #include <sstream>
 
 // rosa work on parsing here, dont touch
-void server::processLine(client &c, std::string line
-	/*, std::vector<Channel> &channels */) 
+void server::processLine(client &c, std::string line)
 {
 	Parser input(line);
 	input.parseStart();
@@ -36,10 +42,22 @@ void server::processLine(client &c, std::string line
 			handlePrivmsg(c, params);
 		else if (type == "QUIT")
 			handleQuit(c);
-		/*else if(type == "JOIN")
-			handleJoin();
-		else if(type == "PART")
-			handlePart();*/
+		else if (type == "JOIN")
+			handleJoin(c, params);
+		else if (type == "PART")
+			partCommandExec(this->channels, c.get_nickname(), params[1]);
+		else if (type == "KICK")
+			kickCommandExec(this->channels, params[2], params[1],
+				c.get_nickname());
+		else if (type == "INVITE")
+			inviteCommandExec(this->channels, params[1], params[2],
+				c.get_nickname());
+		else if (type == "TOPIC")
+			topicCommandExec(this->channels, c.get_nickname(), params[1],
+				params.size() > 2 ? params[2] : "", params.size() - 1);
+		else if (type == "MODE")
+			modeCommandExec(this->channels, c.get_nickname(), params[1],
+				params[2], params.size() > 3 ? params[3] : "");
 	}
 	else if (input.getIsCommConfirm() == -1
 		|| input.getIsCommConfirm() == -2)
@@ -98,6 +116,7 @@ server &server::operator=(server const &other)
 		this->port = other.port;
 		this->password = other.password;
 		this->clients = other.clients;
+		this->channels = other.channels;
 		for (int i = 0; i < 100; i++)
 			this->fds[i] = other.fds[i];
 	}
@@ -196,10 +215,95 @@ void server::tryCompleteRegistration(client &c)
 	}
 }
 
+// find the fd for a nickname, or -1 if nobody currently has it
+int server::findFdByNickname(std::string nickname)
+{
+	for (std::map<int,
+		client>::iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		if (it->second.get_nickname() == nickname)
+			return (it->first);
+	}
+	return (-1);
+}
+
+void server::handlePrivmsgChannel(client &c, std::string channelName,
+	std::string text)
+{
+	if (!findInServChanList(this->channels, channelName))
+	{
+		sendToClient(c.get_fd(), err_nosuchnick(channelName));
+		return ;
+	}
+	int i = getFromServChanListPos(this->channels, channelName);
+	if (!findInChanUserList(this->channels[i].getUsers(), c.get_nickname()))
+	{
+		sendToClient(c.get_fd(), err_cannotsendtochan(channelName));
+		return ;
+	}
+	std::vector<std::string> members = this->channels[i].getUsers();
+	for (size_t m = 0; m < members.size(); m++)
+	{
+		if (members[m] == c.get_nickname())
+			continue ;
+		int fd = findFdByNickname(members[m]);
+		if (fd != -1)
+			sendToClient(fd, ":" + c.get_nickname() + " PRIVMSG "
+				+ channelName + " " + text + "\r\n");
+	}
+}
+
+void server::handleJoin(client &c, std::vector<std::string> params)
+{
+	std::string channelName = params[1];
+	std::string key = params.size() > 2 ? params[2] : "";
+
+	joinCommandExec(this->channels, c.get_nickname(), channelName, key);
+
+	if (!findInServChanList(this->channels, channelName))
+		return ; // exec always creates the channel if it didn't exist
+	int i = getFromServChanListPos(this->channels, channelName);
+	if (!findInChanUserList(this->channels[i].getUsers(), c.get_nickname()))
+	{
+		// join was refused -- figure out which restriction blocked it
+		if (this->channels[i].isModeI())
+			sendToClient(c.get_fd(), err_inviteonlychan(channelName));
+		else if (this->channels[i].isModeK()
+			&& this->channels[i].getKey() != key)
+			sendToClient(c.get_fd(), err_badchannelkey(channelName));
+		return ;
+	}
+
+	std::vector<std::string> members = this->channels[i].getUsers();
+	for (size_t m = 0; m < members.size(); m++)
+	{
+		int fd = findFdByNickname(members[m]);
+		if (fd != -1)
+			sendToClient(fd, ":" + c.get_nickname() + " JOIN " + channelName
+				+ "\r\n");
+	}
+
+	std::string topic = this->channels[i].getTopic();
+	if (topic.empty())
+		sendToClient(c.get_fd(), rpl_notopic(c.get_nickname(), channelName));
+	else
+		sendToClient(c.get_fd(), rpl_topic(c.get_nickname(), channelName,
+				topic));
+
+	std::string names;
+	for (size_t m = 0; m < members.size(); m++)
+	{
+		if (!names.empty())
+			names += " ";
+		names += members[m];
+	}
+	sendToClient(c.get_fd(), rpl_namreply(c.get_nickname(), channelName,
+			names));
+	sendToClient(c.get_fd(), rpl_endofnames(c.get_nickname(), channelName));
+}
+
 void server::handlePrivmsg(client &c, std::vector<std::string> params)
 {
-	client	*target;
-
 	if (params.size() < 2)
 	{
 		sendToClient(c.get_fd(), err_norecipient("*", "PRIVMSG"));
@@ -207,26 +311,22 @@ void server::handlePrivmsg(client &c, std::vector<std::string> params)
 	}
 	if (params.size() < 3)
 	{
-		sendToClient(c.get_fd(), err_norecipient("*", "PRIVMSG"));
+		sendToClient(c.get_fd(), err_notexttosend("*"));
 		return ;
 	}
-	target = NULL;
-	for (std::map<int,
-		client>::iterator it = clients.begin(); it != clients.end(); it++)
+	if (params[1][0] == '#' || params[1][0] == '&')
 	{
-		if (it->second.get_nickname() == params[1])
-		{
-			target = &it->second;
-			break ;
-		}
+		handlePrivmsgChannel(c, params[1], params[2]);
+		return ;
 	}
-	if (!target)
+	int fd = findFdByNickname(params[1]);
+	if (fd == -1)
 	{
 		sendToClient(c.get_fd(), err_nosuchnick(params[1]));
 		return ;
 	}
-	sendToClient(target->get_fd(), ":" + c.get_nickname() + " PRIVMSG "
-		+ params[1] + " :" + params[2] + "\r\n");
+	sendToClient(fd, ":" + c.get_nickname() + " PRIVMSG "
+		+ params[1] + " " + params[2] + "\r\n");
 }
 
 void server::run()
