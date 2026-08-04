@@ -127,11 +127,35 @@ server::~server()
 {
 }
 
+void server::removeClientFromChannels(std::string nickname)
+{
+	for (size_t i = 0; i < this->channels.size(); i++)
+	{
+		if (!findInChanUserList(this->channels[i].getUsers(), nickname))
+			continue ;
+		std::vector<std::string> members = this->channels[i].getUsers();
+		for (size_t m = 0; m < members.size(); m++)
+		{
+			if (members[m] == nickname)
+				continue ;
+			int memberFd = findFdByNickname(members[m]);
+			if (memberFd != -1)
+				sendToClient(memberFd, ":" + nickname
+					+ " QUIT :Client quit\r\n");
+		}
+		this->channels[i].partFromChannel(nickname);
+	}
+}
+
 void server::disconnectClient(int index)
 {
 	// send failed, connection is dead, drop the client
-	close(this->fds[index].fd);
-	this->clients.erase(this->fds[index].fd);
+	int fd = this->fds[index].fd;
+	std::map<int, client>::iterator it = this->clients.find(fd);
+	if (it != this->clients.end())
+		removeClientFromChannels(it->second.get_nickname());
+	close(fd);
+	this->clients.erase(fd);
 	// swap remove, last fd takes this slot so array stays packed
 	this->fds[index] = this->fds[this->nfds - 1];
 	this->nfds--;

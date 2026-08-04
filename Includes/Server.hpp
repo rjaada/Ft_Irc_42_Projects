@@ -50,6 +50,7 @@ class server
 	void processLine(client &c, std::string line);
 	void sendToClient(int fd, std::string message);
 	void disconnectClient(int index);
+	void removeClientFromChannels(std::string nickname);
 	void handleQuit(client &c);
 	void handlePass(client &c, std::vector<std::string> params);
 	void handleNick(client &c, std::vector<std::string> params);
