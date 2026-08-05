@@ -29,7 +29,7 @@ std::string partCommand::getCommType()
 	return (_commType);
 }
 
-void    leaveChannel(std::vector<Channel> &vec, std::string userName, std::string channelName)
+void    leaveChannel(std::vector<Channel> &vec, std::string userName, std::string channelName, client &c, server &serv)
 {
 	if(findInServChanList(vec, channelName))
 	{
@@ -40,6 +40,9 @@ void    leaveChannel(std::vector<Channel> &vec, std::string userName, std::strin
 		{
 			vec[i].partFromChannel(userName);
 			std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " left " HBLU "[" HCYN  << channelName << HBLU "]" HCYN  " channel!" <<std::endl;
+			serv.sendToClient(c.get_fd(), ":You just left channel ");
+			serv.sendToClient(c.get_fd(), channelName);
+			serv.sendToClient(c.get_fd(), ". Goodbye!\n");
 			vec[i].printStatus();
 			return ;
 		}
@@ -50,12 +53,12 @@ void    leaveChannel(std::vector<Channel> &vec, std::string userName, std::strin
 
 }
 //username is the one parting from channel
-void        partCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName)
+void        partCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, client &c, server &serv)
 {
 	std::cout << HCYN << "----------------- In partCommandExec --------------" << std::endl;
 	if(findInServChanList(vec, channelName))
 	{
-		leaveChannel(vec, userName, channelName);
+		leaveChannel(vec, userName, channelName, c, serv);
 	}
 	else
 		std::cout << HCYN << "Channel: " HBLU "[" HCYN  <<channelName << HBLU "]" HCYN  " doesn't exist!" << std::endl;

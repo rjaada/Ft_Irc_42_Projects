@@ -29,7 +29,7 @@ std::string inviteCommand::getCommType()
 	return (_commType);
 }
 //username is the one invited, cuser is the one inviting
-void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string cUser)
+void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string cUser, client &c, server &serv)
 {
 	std::cout << HCYN << "----------------- In inviteCommandExec ---------------" << std::endl;
 	if(!findInServChanList(vec, channelName))
@@ -47,10 +47,31 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " is already in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel by user: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN  << std::endl;
 				return ;
 			}
+			if (findInChanUserList(vec[i].getKicked(), userName))
+			{
+				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " has already been kick from "  HBLU "[" HCYN << channelName << HBLU "]" << std::endl;
+				serv.sendToClient(c.get_fd(), ":You can't invite ");
+				serv.sendToClient(c.get_fd(), cUser);
+				serv.sendToClient(c.get_fd(), " to ");
+				serv.sendToClient(c.get_fd(), channelName);
+				serv.sendToClient(c.get_fd(), "because they have been kicked from the channel!\n");
+				return ;
+			}
 			if (findInChanUserList(vec[i].getUsers(), cUser))
 			{
 				vec[i].invitedToChannel(userName);
 				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " was invited to "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel by user: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN  << std::endl;
+				serv.sendToClient(c.get_fd(), ":You have invited ");
+				serv.sendToClient(c.get_fd(), userName);
+				serv.sendToClient(c.get_fd(), " to ");
+				serv.sendToClient(c.get_fd(), channelName);
+				serv.sendToClient(c.get_fd(), "\n");
+				int	iUserFd = serv.findFdByNickname(userName);
+				serv.sendToClient(iUserFd, ":You have been invited to ");
+				serv.sendToClient(iUserFd, channelName);
+				serv.sendToClient(iUserFd, " by ");
+				serv.sendToClient(iUserFd, cUser);
+				serv.sendToClient(iUserFd, ". Welcome!\n");
 				vec[i].printStatus();
 				return ;
 			}

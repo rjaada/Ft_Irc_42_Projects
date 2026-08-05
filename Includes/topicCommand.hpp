@@ -1,6 +1,8 @@
 #ifndef TOPICCOMMAND_HPP
 # define TOPICCOMMAND_HPP
 # include "Channel.hpp"
+# include "Server.hpp"
+# include "Client.hpp"
 
 class topicCommand
 {
@@ -21,6 +23,6 @@ class topicCommand
 
 };
 
-void	topicCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string newTopic, size_t params);
+void	topicCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string newTopic, size_t params, client &c, server &serv);
 
 #endif

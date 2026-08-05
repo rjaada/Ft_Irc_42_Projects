@@ -1,6 +1,8 @@
 #ifndef KICKCOMMAND_HPP
 # define KICKCOMMAND_HPP
 # include "Channel.hpp"
+# include "Server.hpp"
+# include "Client.hpp"
 
 class kickCommand
 {
@@ -21,7 +23,7 @@ class kickCommand
 
 };
 
-void	operKickUser(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string oper);
-void	kickCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string oper);
+void	operKickUser(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string oper, client &c, server &serv);
+void	kickCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string oper, client &c, server &serv);
 
 #endif

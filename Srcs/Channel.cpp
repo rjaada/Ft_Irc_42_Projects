@@ -445,7 +445,7 @@ void	Channel::printStatus()
 {
 	std::cout << MAG"+++++++++++" HMAG "CHANNEL" MAG "+" HMAG "INFO" MAG "++++++++++++++" reset << std::endl;
 	std::cout << HMAG"name:" MAG " [" HMAG << _chanName << MAG "]" reset << std::endl;
-	std::cout << HMAG"topic:" MAG "  [" HMAG<< _topic << MAG "]" reset << std::endl;
+	std::cout << HMAG"topic:" MAG "  [" HMAG << _topic << MAG "]" reset << std::endl;
 	std::cout << MAG"-------------" HMAG "USER" MAG "-" HMAG "LIST" MAG "---------------" HMAG << std::endl;
 	printVector(_users);
 	std::cout << MAG"-------------" HMAG "OPERATORS" MAG "---------------" HMAG << std::endl;
@@ -490,4 +490,5 @@ int	findInChanUserList(std::vector<std::string> vec, std::string find)
 	}
 	return (0);
 }
+
 

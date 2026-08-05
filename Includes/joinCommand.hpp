@@ -1,6 +1,8 @@
 #ifndef JOINCOMMAND_HPP
 # define JOINCOMMAND_HPP
 # include "Channel.hpp"
+# include "Server.hpp"
+# include "Client.hpp"
 
 class joinCommand
 {
@@ -21,7 +23,8 @@ class joinCommand
 
 };
 
+
 void	newChannel(std::vector<Channel> &vec, std::string userName, std::string channelName);
-void	joinCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string key);
+void	joinCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string key, client &c, server &serv);
 
 #endif

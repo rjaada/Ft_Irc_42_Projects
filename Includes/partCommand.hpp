@@ -1,6 +1,8 @@
 #ifndef PARTCOMMAND_HPP
 # define PARTCOMMAND_HPP
 # include "Channel.hpp"
+# include "Server.hpp"
+# include "Client.hpp"
 
 class partCommand
 {
@@ -21,7 +23,7 @@ class partCommand
 
 };
 
-void	leaveChannel(std::vector<Channel> &vec, std::string userName, std::string channelName);
-void	partCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName);
+void	leaveChannel(std::vector<Channel> &vec, std::string userName, std::string channelName, client &c, server &serv);
+void	partCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, client &c, server &serv);
 
 #endif

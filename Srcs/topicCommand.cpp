@@ -29,7 +29,7 @@ std::string topicCommand::getCommType()
 	return (_commType);
 }
 //username is the one calling the command, params tell us if we are changing the topic or just calling it to be printed on screen
-void	topicCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string newTopic, size_t params)
+void	topicCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string newTopic, size_t params, client &c, server &serv)
 {
 	std::cout << HCYN << "----------------- In topicCommandExec ----------------" << std::endl;
 	if(!findInServChanList(vec, channelName))
@@ -60,6 +60,11 @@ void	topicCommandExec(std::vector<Channel> &vec, std::string userName, std::stri
 				}
 				if (params == 1)
 				{
+					serv.sendToClient(c.get_fd(), ":Topic of ");
+					serv.sendToClient(c.get_fd(), channelName);
+					serv.sendToClient(c.get_fd(), " is ");
+					serv.sendToClient(c.get_fd(), vec[i].getTopic());
+					serv.sendToClient(c.get_fd(), "\n");
 					std::cout <<  HBLU "[" HCYN << channelName <<  HBLU "]" HCYN " topic: " << vec[i].getTopic() << std::endl;
 					return ;
 				}

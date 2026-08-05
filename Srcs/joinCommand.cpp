@@ -35,7 +35,7 @@ std::string joinCommand::getCommType()
 }
 
 void	newChannel(std::vector<Channel> &vec, std::string userName,
-		std::string channelName)
+		std::string channelName, client &c, server &serv)
 {
 	if (!findInServChanList(vec, channelName))
 	{
@@ -45,17 +45,20 @@ void	newChannel(std::vector<Channel> &vec, std::string userName,
 		vec.push_back(newChannel);
 		std::cout << HBLU "[" HCYN << channelName << HBLU "]" HCYN " channel created by " HBLU "[" HCYN << userName << HBLU "]" HCYN " !" << std::endl;
 		newChannel.printStatus();
+		serv.sendToClient(c.get_fd(), ":You have created the new channel ");
+		serv.sendToClient(c.get_fd(), channelName);
+		serv.sendToClient(c.get_fd(), "!\n");
 	}
 }
 // username is the one joining, sometimes needs key, sometimes its ignored
-void	joinCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string key)
+void	joinCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string key, client &c, server &serv)
 {
 	int	i;
 
 	std::cout << HCYN << "----------------- In joinCommandExec ----------------" << std::endl;
 	if (!findInServChanList(vec, channelName))
 	{
-		newChannel(vec, userName, channelName);
+		newChannel(vec, userName, channelName, c, serv);
 	}
 	else
 	{
@@ -76,6 +79,9 @@ void	joinCommandExec(std::vector<Channel> &vec, std::string userName, std::strin
 				}
 			}
 			vec[i].joinChannel(userName);
+			serv.sendToClient(c.get_fd(), ":You have joined the channel ");
+			serv.sendToClient(c.get_fd(), channelName);
+			serv.sendToClient(c.get_fd(), ". Welcome!\n");
 			vec[i].printStatus();
 		}
 	}

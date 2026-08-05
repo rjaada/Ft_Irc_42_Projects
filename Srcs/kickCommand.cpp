@@ -29,7 +29,7 @@ std::string kickCommand::getCommType()
 	return (_commType);
 }
 //username is the one being kicked, oper is the one kicking
-void    operKickUser(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string oper)
+void    operKickUser(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string oper, client &c, server &serv)
 {
 	if(findInServChanList(vec, channelName))
 	{
@@ -42,6 +42,17 @@ void    operKickUser(std::vector<Channel> &vec, std::string userName, std::strin
 			{
 				vec[i].kickFromChannel(userName);
 				std::cout << HCYN << "Operator: " HBLU "[" HCYN  << oper << HBLU "]" HCYN  " kicked "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " from "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel!" << std::endl;
+				serv.sendToClient(c.get_fd(), ":You have kicked ");
+				serv.sendToClient(c.get_fd(), userName);
+				serv.sendToClient(c.get_fd(), " from ");
+				serv.sendToClient(c.get_fd(), channelName);
+				serv.sendToClient(c.get_fd(), "!\n");
+				int	kUserFd = serv.findFdByNickname(userName);
+				serv.sendToClient(kUserFd, ":You have been kicked from ");
+				serv.sendToClient(kUserFd, channelName);
+				serv.sendToClient(kUserFd, " by ");
+				serv.sendToClient(kUserFd, oper);
+				serv.sendToClient(kUserFd, "!\n");
 				vec[i].printStatus();
 				return ;
 			}
@@ -53,12 +64,12 @@ void    operKickUser(std::vector<Channel> &vec, std::string userName, std::strin
 	}
 }
 
-void        kickCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string oper)
+void        kickCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string oper, client &c, server &serv)
 {
 	std::cout << HCYN << "----------------- In kickCommandExec ------------------" << std::endl;
 	if(findInServChanList(vec, channelName))
 	{
-		operKickUser(vec, userName, channelName, oper);
+		operKickUser(vec, userName, channelName, oper, c, serv);
 	}
 	else
 		std::cout << HCYN << "Channel: "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " doesn't exist!" << std::endl;

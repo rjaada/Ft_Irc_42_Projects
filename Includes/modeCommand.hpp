@@ -1,6 +1,8 @@
 #ifndef MODECOMMAND_HPP
 # define MODECOMMAND_HPP
 # include "Channel.hpp"
+# include "Server.hpp"
+# include "Client.hpp"
 
 class modeCommand
 {
@@ -21,6 +23,6 @@ class modeCommand
 
 };
 
-void	modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::string channelName, std::string mode, std::string param);
+void	modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::string channelName, std::string mode, std::string param, client &c, server &serv);
 
 #endif

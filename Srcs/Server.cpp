@@ -6,7 +6,7 @@
 /*   By: romorale <romorale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 13:55:21 by rjaada            #+#    #+#             */
-/*   Updated: 2026/08/01 16:36:04 by romorale         ###   ########.fr       */
+/*   Updated: 2026/08/05 17:05:45 by romorale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,19 +45,19 @@ void server::processLine(client &c, std::string line)
 		else if (type == "JOIN")
 			handleJoin(c, params);
 		else if (type == "PART")
-			partCommandExec(this->channels, c.get_nickname(), params[1]);
+			partCommandExec(this->channels, c.get_nickname(), params[1], c, *this);
 		else if (type == "KICK")
 			kickCommandExec(this->channels, params[2], params[1],
-				c.get_nickname());
+				c.get_nickname(), c, *this);
 		else if (type == "INVITE")
 			inviteCommandExec(this->channels, params[1], params[2],
-				c.get_nickname());
+				c.get_nickname(), c, *this);
 		else if (type == "TOPIC")
 			topicCommandExec(this->channels, c.get_nickname(), params[1],
-				params.size() > 2 ? params[2] : "", params.size() - 1);
+				params.size() > 2 ? params[2] : "", params.size() - 1, c, *this);
 		else if (type == "MODE")
 			modeCommandExec(this->channels, c.get_nickname(), params[1],
-				params[2], params.size() > 3 ? params[3] : "");
+				params[2], params.size() > 3 ? params[3] : "", c, *this);
 	}
 	else if (input.getIsCommConfirm() == -1
 		|| input.getIsCommConfirm() == -2)
@@ -282,7 +282,7 @@ void server::handleJoin(client &c, std::vector<std::string> params)
 	std::string channelName = params[1];
 	std::string key = params.size() > 2 ? params[2] : "";
 
-	joinCommandExec(this->channels, c.get_nickname(), channelName, key);
+	joinCommandExec(this->channels, c.get_nickname(), channelName, key, c, *this);
 
 	if (!findInServChanList(this->channels, channelName))
 		return ; // exec always creates the channel if it didn't exist

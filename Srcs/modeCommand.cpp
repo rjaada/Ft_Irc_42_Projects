@@ -29,7 +29,7 @@ std::string modeCommand::getCommType()
 	return (_commType);
 }
 //cuser is the one using mode, param is the parameter after (+/-)(i/t/k/o/l), sometimes not needed
-void        modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::string channelName, std::string mode, std::string param)
+void        modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::string channelName, std::string mode, std::string param, client &c, server &serv)
 {
 	std::cout << HCYN << "----------------- In modeCommandExec ----------------" << std::endl;
 	if(!findInServChanList(vec, channelName))
@@ -48,6 +48,12 @@ void        modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::s
 				{
 					vec[i].handleMode(mode, param);
 					std::cout << HCYN << "User: " HBLU "[" HCYN << cUser << HBLU "]" HCYN  " operator in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " changed the mode to: " << mode << std::endl;
+					
+					serv.sendToClient(c.get_fd(), ":Channel ");
+					serv.sendToClient(c.get_fd(), channelName);
+					serv.sendToClient(c.get_fd(), " mode set to ");
+					serv.sendToClient(c.get_fd(), mode);
+					serv.sendToClient(c.get_fd(), "\n");
 					vec[i].printStatus();
 					return ;
 				}

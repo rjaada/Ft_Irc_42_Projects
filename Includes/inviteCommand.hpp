@@ -1,6 +1,8 @@
 #ifndef INVITECOMMAND_HPP
 # define INVITECOMMAND_HPP
 # include "Channel.hpp"
+# include "Server.hpp"
+# include "Client.hpp"
 
 class inviteCommand
 {
@@ -21,6 +23,6 @@ class inviteCommand
 
 };
 
-void	inviteCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string cUser);
+void	inviteCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string cUser, client &c, server &serv);
 
 #endif
