@@ -188,7 +188,7 @@ int Parser::userParaCount()
 					return (0);
 				sFlag++;
 			}
-			if ((isalnum(_rawStr[i]) || _rawStr[i] == ':') && i != 0)
+			if (_rawStr[i] != ' ' && i != 0)
 			{
 				if (_rawStr[i - 1] == ' ' && !colFlag)
 					wFlag++;

@@ -90,6 +90,10 @@ server::server(int port, std::string password) : port(port), password(password)
 	this->serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	// non blocking, subject says every fd must be non blocking
 	fcntl(serverSocket, F_SETFL, O_NONBLOCK);
+	// let the socket rebind immediately after a restart instead of
+	// waiting out TIME_WAIT on the old connection
+	int reuse = 1;
+	setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 	serverAdress.sin_family = AF_INET;
 	serverAdress.sin_port = htons(this->port);
 	serverAdress.sin_addr.s_addr = inet_addr("127.0.0.1");
