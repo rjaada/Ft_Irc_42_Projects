@@ -47,9 +47,8 @@ void	newChannel(std::vector<Channel> &vec, std::string userName,
 		newChannel.printStatus();
 	}
 }
-// username is the one joining, sometimes need key, sometimes its ignored
-void	joinCommandExec(std::vector<Channel> &vec, std::string userName,
-		std::string channelName, std::string key)
+// username is the one joining, sometimes needs key, sometimes its ignored
+void	joinCommandExec(std::vector<Channel> &vec, std::string userName, std::string channelName, std::string key)
 {
 	int	i;
 
@@ -77,6 +76,7 @@ void	joinCommandExec(std::vector<Channel> &vec, std::string userName,
 				}
 			}
 			vec[i].joinChannel(userName);
+			vec[i].printStatus();
 		}
 	}
 }

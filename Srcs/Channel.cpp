@@ -174,7 +174,32 @@ void	Channel::removeChannelOper(std::string user)
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " is not even an operator in the channel! Can't remove operator status!" << std::endl;
 }
 
-// H3Y!, //instead of using join again, create handler in channel for invite specifically
+void	Channel::invitedToChannel(std::string newUser)
+{
+	std::cout << HYEL << "--- In Channel::invitedToChannel ---" << std::endl;
+
+	if (findInVec(getKicked(), newUser))
+	{
+		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newUser << HRED "]" HYEL  " can't be invited, kicked from channel!" << std::endl;
+		return ;
+	}
+	if ((getUsers().size()) < getLimit())
+	{
+		if (!findInVec(getUsers(), newUser))
+		{
+			addToVec(_users, newUser);
+			std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newUser << HRED "]" HYEL  " joined the channel!" << std::endl;	
+			return ;
+	}
+	else
+		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newUser << HRED "]" HYEL  " already in channel!" << std::endl;
+	}
+	else
+	{
+			std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newUser << HRED "]" HYEL  " can't join the channel! limit is " << getLimit() << std::endl;	
+			return ;
+	}
+}
 
 void	Channel::joinChannel(std::string newUser)
 {
@@ -418,7 +443,7 @@ void	Channel::handleMode(std::string mode, std::string param)
 
 void	Channel::printStatus()
 {
-	std::cout << MAG"\n+++++++++++" HMAG "CHANNEL" MAG "+" HMAG "INFO" MAG "++++++++++++++" reset << std::endl;
+	std::cout << MAG"+++++++++++" HMAG "CHANNEL" MAG "+" HMAG "INFO" MAG "++++++++++++++" reset << std::endl;
 	std::cout << HMAG"name:" MAG " [" HMAG << _chanName << MAG "]" reset << std::endl;
 	std::cout << HMAG"topic:" MAG "  [" HMAG<< _topic << MAG "]" reset << std::endl;
 	std::cout << MAG"-------------" HMAG "USER" MAG "-" HMAG "LIST" MAG "---------------" HMAG << std::endl;

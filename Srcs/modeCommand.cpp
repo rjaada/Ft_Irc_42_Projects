@@ -48,6 +48,7 @@ void        modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::s
 				{
 					vec[i].handleMode(mode, param);
 					std::cout << HCYN << "User: " HBLU "[" HCYN << cUser << HBLU "]" HCYN  " operator in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " changed the mode to: " << mode << std::endl;
+					vec[i].printStatus();
 					return ;
 				}
 				else
@@ -62,7 +63,7 @@ void        modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::s
 				return ;
 			}
 		}
-		vec[i].printStatus();
+
 	}
 }
 

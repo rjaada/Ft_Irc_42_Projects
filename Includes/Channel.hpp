@@ -48,6 +48,7 @@ class Channel
 		void						removeFromVec(std::vector<std::string> &vec, std::string rem); //remove from vector
 		void						printVector(std::vector<std::string> vec);
 
+		void						invitedToChannel(std::string newUser);
 		void						joinChannel(std::string	newUser);
 		void						partFromChannel(std::string user);
 		void						kickFromChannel(std::string user);
