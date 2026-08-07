@@ -36,9 +36,9 @@ void    operKickUser(std::vector<Channel> &vec, std::string userName, std::strin
 		int i = getFromServChanListPos(vec, channelName);
 		if (i == -1)
 			return ;
-		if (findInChanUserList(vec[i].getOps(), oper))
+		if (findInChanUserList(vec[i].getOps(), '@' + oper))
 		{
-			if (findInChanUserList(vec[i].getUsers(), userName))
+			if (findInChanUserList(vec[i].getUsers(), userName) || findInChanUserList(vec[i].getUsers(), '@' + userName))
 			{
 				vec[i].kickFromChannel(userName);
 				std::cout << HCYN << "Operator: " HBLU "[" HCYN  << oper << HBLU "]" HCYN  " kicked "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " from "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel!" << std::endl;

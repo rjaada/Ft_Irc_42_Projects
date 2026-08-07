@@ -142,7 +142,7 @@ int Parser::nickParaCount()
 		{
 			if (_rawStr[i] == ' ')
 				sFlag++;
-			if (isalnum(_rawStr[i]) && i != 0)
+			if ((isalnum(_rawStr[i])) && i != 0)
 			{
 				if (_rawStr[i - 1] == ' ')
 					wFlag++;
@@ -588,7 +588,7 @@ int Parser::operParaCount()
 		{
 			if (_rawStr[i] == ' ')
 				sFlag++;
-			if (isalnum(_rawStr[i]) && i != 0)
+			if ((isalnum(_rawStr[i])) && i != 0)
 			{
 				if (_rawStr[i - 1] == ' ')
 					wFlag++;

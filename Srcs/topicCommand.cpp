@@ -42,13 +42,13 @@ void	topicCommandExec(std::vector<Channel> &vec, std::string userName, std::stri
 		int i = getFromServChanListPos(vec, channelName);
 		if (i != -1)
 		{
-			if (findInChanUserList(vec[i].getUsers(), userName))
+			if (findInChanUserList(vec[i].getUsers(), userName) || findInChanUserList(vec[i].getUsers(), '@' + userName))
 			{
 				if (params == 2)
 				{
 					if (vec[i].isModeT())
 					{
-						if (!findInChanUserList(vec[i].getOps(), userName))
+						if (!findInChanUserList(vec[i].getOps(), '@' + userName))
 						{
 							std::cout <<  HBLU "[" HCYN << channelName <<  HBLU "]" HCYN " channel topic change is restricted!" << std::endl;
 							return ;

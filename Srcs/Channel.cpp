@@ -136,14 +136,14 @@ void	Channel::becomeChannelOper(std::string user)
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " can't become an operator, kicked from channel!" << std::endl;
 		return ;
 	}
-	if (!findInVec(getUsers(), user))
+	if (!findInVec(getUsers(), user) && !findInVec(getUsers(), '@' + user))
 	{
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " not in the channel!" << std::endl;
 		return ;
 	}
-	if (!findInVec(getOps(), user))
+	if (!findInVec(getOps(), '@' + user))
 	{
-		addToVec(_operators, user);
+		addToVec(_operators, '@' + user);
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " is operator in the channel!" << std::endl;
 		return ;
 	}
@@ -159,14 +159,14 @@ void	Channel::removeChannelOper(std::string user)
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " is a kicked user! Can't remove operator status!" << std::endl;
 		return ;
 	}
-	if (!findInVec(getUsers(), user))
+	if (!findInVec(getUsers(), user) && !findInVec(getUsers(), '@' + user))
 	{
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " not in the channel!" << std::endl;
 		return ;
 	}
-	if (findInVec(getOps(), user))
+	if (findInVec(getOps(), '@' + user))
 	{
-		removeFromVec(_operators, user);
+		removeFromVec(_operators, '@' + user);
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " is no longer operator in the channel!" << std::endl;
 		return ;
 	}
@@ -185,7 +185,7 @@ void	Channel::invitedToChannel(std::string newUser)
 	}
 	if ((getUsers().size()) < getLimit())
 	{
-		if (!findInVec(getUsers(), newUser))
+		if (!findInVec(getUsers(), newUser) && !findInVec(getUsers(), '@' + newUser))
 		{
 			addToVec(_users, newUser);
 			std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newUser << HRED "]" HYEL  " joined the channel!" << std::endl;	
@@ -213,7 +213,7 @@ void	Channel::joinChannel(std::string newUser)
 		}
 		if ((getUsers().size()) < getLimit())
 		{
-			if (!findInVec(getUsers(), newUser))
+			if (!findInVec(getUsers(), newUser) && !findInVec(getUsers(), '@' + newUser))
 			{
 				addToVec(_users, newUser);
 				std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newUser << HRED "]" HYEL  " joined the channel!" << std::endl;	
@@ -235,13 +235,12 @@ void	Channel::joinChannel(std::string newUser)
 void	Channel::partFromChannel(std::string user)
 {
 	std::cout << HYEL << "--- In Channel::partFromChannel ---" << std::endl;
-	if (findInVec(getUsers(), user))
+	if (findInVec(getUsers(), user) || findInVec(getUsers(), '@' + user))
 	{
 		removeFromVec(_users, user);
-		{
-			if (findInVec(getOps(), user))
-				removeFromVec(_operators, user);
-		}
+		removeFromVec(_users, '@' + user);
+			if (findInVec(getOps(), '@' + user))
+				removeFromVec(_operators, '@' + user);
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " left channel!" << std::endl;	
 	}
 	else
@@ -251,14 +250,15 @@ void	Channel::partFromChannel(std::string user)
 void	Channel::kickFromChannel(std::string user)
 {
 	std::cout << HYEL << "--- In Channel::kickFromChannel ---" << std::endl;
-	if (!findInVec(getKicked(), user))
+	if (!findInVec(getKicked(), user) && !findInVec(getKicked(), '@' + user))
 	{
-		if (findInVec(getUsers(), user))
+		if (findInVec(getUsers(), user) || findInVec(getUsers(), '@' + user))
 		{
 			addToVec(_kickedUsers, user);
 			removeFromVec(_users, user);
-				if (findInVec(getOps(), user))
-					removeFromVec(_operators, user);
+			removeFromVec(_users, '@' + user);
+				if (findInVec(getOps(), '@' + user))
+					removeFromVec(_operators, '@' + user);
 			std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " kicked from channel!" << std::endl;	
 		}
 		else
@@ -357,24 +357,28 @@ void	Channel::handleModeK(std::string mode, std::string key)
 void	Channel::handleModeO(std::string mode, std::string newOper)
 {
 	std::cout << HYEL << "--- In handleMode O ---" << std::endl;
-	if (mode == "+o" && (!findInVec(_operators, newOper)))
+	if (mode == "+o" && (!findInVec(_operators, '@' + newOper)))
 	{
-		addToVec(_operators, newOper);
+		removeFromVec(_users, newOper);
+		addToVec(_users, '@' + newOper);
+		addToVec(_operators, '@' + newOper);
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newOper << HRED "]" HYEL  " is now an operator in the channel"<< std::endl;
 		return ;
 	}
-	else if (mode == "+o" && (findInVec(_operators, newOper) == 1))
+	else if (mode == "+o" && (findInVec(_operators, '@' + newOper) == 1))
 	{
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newOper << HRED "]" HYEL  " is already operator in the channel" << std::endl;
 		return ;
 	}
-	if (mode == "-o" && (findInVec(_operators, newOper) == 1))
+	if (mode == "-o" && (findInVec(_operators, '@' + newOper) == 1))
 	{
-		removeFromVec(_operators, newOper);
+		removeFromVec(_operators, '@' + newOper);
+		removeFromVec(_users, '@' + newOper);
+		addToVec(_users, newOper);
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newOper << HRED "]" HYEL  " is not an operator anymore in the channel"<< std::endl;
 		return ;
 	}
-	else if (mode == "-o" && (!findInVec(_operators, newOper)))
+	else if (mode == "-o" && (!findInVec(_operators, '@' + newOper)))
 	{
 		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newOper << HRED "]" HYEL  " is already not an operator in channel" << std::endl;
 		return ;
@@ -465,28 +469,28 @@ std::string	Channel::getChanInfo()
 {
 	std::stringstream ss;
 
-	ss << BLU"+++++++++++" HCYN "CHANNEL" BLU "+" HCYN "INFO" BLU "++++++++++++++" reset << std::endl;
-	ss << HCYN"name:" BLU " [" HCYN << _chanName << BLU "]" reset << std::endl;
-	ss << HCYN"topic:" BLU "  [" HCYN << _topic << BLU "]" reset << std::endl;
-	ss << BLU"-------------" HCYN "USER" BLU "-" HCYN "LIST" BLU "---------------" HCYN << std::endl;
+	ss << "+++++++++++"  "CHANNEL"  "+"  "INFO"  "++++++++++++++" << std::endl;
+	ss << "name:"  " ["  << _chanName <<  "]" << std::endl;
+	ss << "topic:"  "  ["  << _topic <<  "]" << std::endl;
+	ss << "-------------"  "USER"  "-"  "LIST"  "---------------"  << std::endl;
 	for (size_t i = 0 ; i < _users.size() ; i++)
-		ss << BLU "[" HCYN << _users[i] << BLU "]" << ' ';
+		ss <<  "["  << _users[i] <<  "]" << ' ';
 	ss << '\n';
-	ss << BLU"-------------" HCYN "OPERATORS" BLU "---------------" HCYN << std::endl;
+	ss << "-------------"  "OPERATORS"  "---------------"  << std::endl;
 	for (size_t i = 0 ; i < _operators.size() ; i++)
-		ss << BLU "[" HCYN << _operators[i] << BLU "]" << ' ';
+		ss <<  "["  << _operators[i] <<  "]" << ' ';
 	ss << '\n';
-	ss << BLU"------------" HCYN "KICKED" BLU "-" HCYN "USERS" BLU "-------------" HCYN << std::endl;
+	ss << "------------"  "KICKED"  "-"  "USERS"  "-------------"  << std::endl;
 	for (size_t i = 0 ; i < _kickedUsers.size() ; i++)
-		ss << BLU "[" HCYN << _kickedUsers[i] << BLU "]" << ' ';
+		ss <<  "["  << _kickedUsers[i] <<  "]" << ' ';
 	ss << '\n';
-	ss << BLU"----------------" HCYN "MODE" BLU "-----------------" reset << std::endl;
-	ss << HCYN"invite only:" BLU "  [" HCYN << _iMode << BLU "]" reset << std::endl;
-	ss << HCYN"topic restriction:" BLU "  [" HCYN << _tMode << BLU "]" reset << std::endl;
-	ss << HCYN"key protected:" BLU "  [" HCYN << _kMode << BLU "]" reset << std::endl;
-	ss << HCYN"key:" BLU "  [" HCYN<< _key << BLU "]" reset << std::endl;
-	ss << HCYN"user limit:" BLU "  [" HCYN << _userLimit << BLU "]" reset << std::endl;
-	ss << BLU"+++++++++++++++++++++++++++++++++++++" reset << std::endl;
+	ss << "----------------"  "MODE"  "-----------------" << std::endl;
+	ss << "invite only:"  "  ["  << _iMode <<  "]" << std::endl;
+	ss << "topic restriction:"  "  ["  << _tMode <<  "]" << std::endl;
+	ss << "key protected:"  "  ["  << _kMode <<  "]" << std::endl;
+	ss << "key:"  "  [" << _key <<  "]" << std::endl;
+	ss << "user limit:"  "  ["  << _userLimit <<  "]" << std::endl;
+	ss << "+++++++++++++++++++++++++++++++++++++" << std::endl;
 
 	std::string s = ss.str();
 	return (s);
@@ -516,7 +520,7 @@ int	findInChanUserList(std::vector<std::string> vec, std::string find)
 {
 	for (size_t i = 0 ; i < vec.size() ; i++)
 	{
-		if (vec[i] == find)
+		if (vec[i] == find || vec[i] == find)
 			return (1);
 	}
 	return (0);

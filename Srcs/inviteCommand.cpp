@@ -42,7 +42,7 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 		int i = getFromServChanListPos(vec, channelName);
 		if (i != -1)
 		{
-			if (findInChanUserList(vec[i].getUsers(), userName))
+			if (findInChanUserList(vec[i].getUsers(), userName) || findInChanUserList(vec[i].getUsers(), '@' + userName))
 			{
 				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " is already in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel by user: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN  << std::endl;
 				return ;
@@ -57,7 +57,7 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 				serv.sendToClient(c.get_fd(), "because they have been kicked from the channel!\n");
 				return ;
 			}
-			if (findInChanUserList(vec[i].getUsers(), cUser))
+			if (findInChanUserList(vec[i].getUsers(), cUser) || findInChanUserList(vec[i].getUsers(), '@' + cUser))
 			{
 				vec[i].invitedToChannel(userName);
 				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " was invited to "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel by user: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN  << std::endl;

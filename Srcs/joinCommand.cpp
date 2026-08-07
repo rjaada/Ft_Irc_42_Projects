@@ -40,7 +40,7 @@ void	newChannel(std::vector<Channel> &vec, std::string userName,
 	if (!findInServChanList(vec, channelName))
 	{
 		Channel newChannel(channelName);
-		newChannel.joinChannel(userName);
+		newChannel.joinChannel( '@' + userName);
 		newChannel.becomeChannelOper(userName);
 		vec.push_back(newChannel);
 		std::cout << HBLU "[" HCYN << channelName << HBLU "]" HCYN " channel created by " HBLU "[" HCYN << userName << HBLU "]" HCYN " !" << std::endl;
