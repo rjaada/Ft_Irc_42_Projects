@@ -443,22 +443,53 @@ void	Channel::handleMode(std::string mode, std::string param)
 
 void	Channel::printStatus()
 {
-	std::cout << MAG"+++++++++++" HMAG "CHANNEL" MAG "+" HMAG "INFO" MAG "++++++++++++++" reset << std::endl;
-	std::cout << HMAG"name:" MAG " [" HMAG << _chanName << MAG "]" reset << std::endl;
-	std::cout << HMAG"topic:" MAG "  [" HMAG << _topic << MAG "]" reset << std::endl;
-	std::cout << MAG"-------------" HMAG "USER" MAG "-" HMAG "LIST" MAG "---------------" HMAG << std::endl;
+	std::cout << HRED"+++++++++++" HYEL "CHANNEL" HRED "+" HYEL "INFO" HRED "++++++++++++++" reset << std::endl;
+	std::cout << HYEL"name:" HRED " [" HYEL << _chanName << HRED "]" reset << std::endl;
+	std::cout << HYEL"topic:" HRED "  [" HYEL << _topic << HRED "]" reset << std::endl;
+	std::cout << HRED"-------------" HYEL "USER" HRED "-" HYEL "LIST" HRED "---------------" HYEL << std::endl;
 	printVector(_users);
-	std::cout << MAG"-------------" HMAG "OPERATORS" MAG "---------------" HMAG << std::endl;
+	std::cout << HRED"-------------" HYEL "OPERATORS" HRED "---------------" HYEL << std::endl;
 	printVector(_operators);
-	std::cout << MAG"------------" HMAG "KICKED" MAG "-" HMAG "USERS" MAG "-------------" HMAG << std::endl;
+	std::cout << HRED"------------" HYEL "KICKED" HRED "-" HYEL "USERS" HRED "-------------" HYEL << std::endl;
 	printVector(_kickedUsers);
-	std::cout << MAG"----------------" HMAG "MODE" MAG "-----------------" reset << std::endl;
-	std::cout << HMAG"invite only:" MAG "  [" HMAG << _iMode << MAG "]" reset << std::endl;
-	std::cout << HMAG"topic restriction:" MAG "  [" HMAG << _tMode << MAG "]" reset << std::endl;
-	std::cout << HMAG"key protected:" MAG "  [" HMAG << _kMode << MAG "]" reset << std::endl;
-	std::cout << HMAG"key:" MAG "  [" HMAG<< _key << MAG "]" reset << std::endl;
-	std::cout << HMAG"user limit:" MAG "  [" HMAG << _userLimit << MAG "]" reset << std::endl;
-	std::cout << MAG"+++++++++++++++++++++++++++++++++++++" reset << std::endl;
+	std::cout << HRED"----------------" HYEL "MODE" HRED "-----------------" reset << std::endl;
+	std::cout << HYEL"invite only:" HRED "  [" HYEL << _iMode << HRED "]" reset << std::endl;
+	std::cout << HYEL"topic restriction:" HRED "  [" HYEL << _tMode << HRED "]" reset << std::endl;
+	std::cout << HYEL"key protected:" HRED "  [" HYEL << _kMode << HRED "]" reset << std::endl;
+	std::cout << HYEL"key:" HRED "  [" HYEL<< _key << HRED "]" reset << std::endl;
+	std::cout << HYEL"user limit:" HRED "  [" HYEL << _userLimit << HRED "]" reset << std::endl;
+	std::cout << HRED"+++++++++++++++++++++++++++++++++++++" reset << std::endl;
+}
+
+std::string	Channel::getChanInfo()
+{
+	std::stringstream ss;
+
+	ss << BLU"+++++++++++" HCYN "CHANNEL" BLU "+" HCYN "INFO" BLU "++++++++++++++" reset << std::endl;
+	ss << HCYN"name:" BLU " [" HCYN << _chanName << BLU "]" reset << std::endl;
+	ss << HCYN"topic:" BLU "  [" HCYN << _topic << BLU "]" reset << std::endl;
+	ss << BLU"-------------" HCYN "USER" BLU "-" HCYN "LIST" BLU "---------------" HCYN << std::endl;
+	for (size_t i = 0 ; i < _users.size() ; i++)
+		ss << BLU "[" HCYN << _users[i] << BLU "]" << ' ';
+	ss << '\n';
+	ss << BLU"-------------" HCYN "OPERATORS" BLU "---------------" HCYN << std::endl;
+	for (size_t i = 0 ; i < _operators.size() ; i++)
+		ss << BLU "[" HCYN << _operators[i] << BLU "]" << ' ';
+	ss << '\n';
+	ss << BLU"------------" HCYN "KICKED" BLU "-" HCYN "USERS" BLU "-------------" HCYN << std::endl;
+	for (size_t i = 0 ; i < _kickedUsers.size() ; i++)
+		ss << BLU "[" HCYN << _kickedUsers[i] << BLU "]" << ' ';
+	ss << '\n';
+	ss << BLU"----------------" HCYN "MODE" BLU "-----------------" reset << std::endl;
+	ss << HCYN"invite only:" BLU "  [" HCYN << _iMode << BLU "]" reset << std::endl;
+	ss << HCYN"topic restriction:" BLU "  [" HCYN << _tMode << BLU "]" reset << std::endl;
+	ss << HCYN"key protected:" BLU "  [" HCYN << _kMode << BLU "]" reset << std::endl;
+	ss << HCYN"key:" BLU "  [" HCYN<< _key << BLU "]" reset << std::endl;
+	ss << HCYN"user limit:" BLU "  [" HCYN << _userLimit << BLU "]" reset << std::endl;
+	ss << BLU"+++++++++++++++++++++++++++++++++++++" reset << std::endl;
+
+	std::string s = ss.str();
+	return (s);
 }
 
 int	getFromServChanListPos(std::vector<Channel> &vec, std::string find)

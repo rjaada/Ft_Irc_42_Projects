@@ -54,6 +54,7 @@ void        modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::s
 					serv.sendToClient(c.get_fd(), " mode set to ");
 					serv.sendToClient(c.get_fd(), mode);
 					serv.sendToClient(c.get_fd(), "\n");
+					serv.sendToClient(c.get_fd(), vec[i].getChanInfo());
 					vec[i].printStatus();
 					return ;
 				}

@@ -5,6 +5,7 @@
 # include <vector>
 # include <cstdlib>
 # include <unistd.h>
+# include <sstream>
 # include "Colors.hpp"
 
 class Channel
@@ -64,6 +65,7 @@ class Channel
 		void						handleModeL(std::string mode, std::string limit);
 
 		void						printStatus();
+		std::string					getChanInfo();
 };
 
 int	getFromServChanListPos(std::vector<Channel> &vec, std::string find);

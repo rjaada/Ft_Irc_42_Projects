@@ -66,12 +66,14 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 				serv.sendToClient(c.get_fd(), " to ");
 				serv.sendToClient(c.get_fd(), channelName);
 				serv.sendToClient(c.get_fd(), "\n");
+				serv.sendToClient(c.get_fd(), vec[i].getChanInfo());
 				int	iUserFd = serv.findFdByNickname(userName);
 				serv.sendToClient(iUserFd, ":You have been invited to ");
 				serv.sendToClient(iUserFd, channelName);
 				serv.sendToClient(iUserFd, " by ");
 				serv.sendToClient(iUserFd, cUser);
 				serv.sendToClient(iUserFd, ". Welcome!\n");
+				serv.sendToClient(iUserFd, vec[i].getChanInfo());
 				vec[i].printStatus();
 				return ;
 			}

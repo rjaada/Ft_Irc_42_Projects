@@ -48,6 +48,7 @@ void	newChannel(std::vector<Channel> &vec, std::string userName,
 		serv.sendToClient(c.get_fd(), ":You have created the new channel ");
 		serv.sendToClient(c.get_fd(), channelName);
 		serv.sendToClient(c.get_fd(), "!\n");
+		serv.sendToClient(c.get_fd(), newChannel.getChanInfo());
 	}
 }
 // username is the one joining, sometimes needs key, sometimes its ignored
@@ -82,6 +83,7 @@ void	joinCommandExec(std::vector<Channel> &vec, std::string userName, std::strin
 			serv.sendToClient(c.get_fd(), ":You have joined the channel ");
 			serv.sendToClient(c.get_fd(), channelName);
 			serv.sendToClient(c.get_fd(), ". Welcome!\n");
+			serv.sendToClient(c.get_fd(), vec[i].getChanInfo());
 			vec[i].printStatus();
 		}
 	}

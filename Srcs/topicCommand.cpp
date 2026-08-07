@@ -55,6 +55,7 @@ void	topicCommandExec(std::vector<Channel> &vec, std::string userName, std::stri
 						}
 					}
 					vec[i].changeChannelTopic(newTopic);
+					serv.sendToClient(c.get_fd(), vec[i].getChanInfo());
 					vec[i].printStatus();
 					return ;
 				}

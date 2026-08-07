@@ -47,6 +47,7 @@ void    operKickUser(std::vector<Channel> &vec, std::string userName, std::strin
 				serv.sendToClient(c.get_fd(), " from ");
 				serv.sendToClient(c.get_fd(), channelName);
 				serv.sendToClient(c.get_fd(), "!\n");
+				serv.sendToClient(c.get_fd(), vec[i].getChanInfo());
 				int	kUserFd = serv.findFdByNickname(userName);
 				serv.sendToClient(kUserFd, ":You have been kicked from ");
 				serv.sendToClient(kUserFd, channelName);
