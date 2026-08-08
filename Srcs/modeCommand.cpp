@@ -34,6 +34,7 @@ void        modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::s
 	std::cout << HCYN << "----------------- In modeCommandExec ----------------" << std::endl;
 	if(!findInServChanList(vec, channelName))
 	{
+		serv.sendToClient(c.get_fd(), err_nosuchchannel(cUser, channelName));
 		std::cout << HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel not on list!" << std::endl;
 		return ;
 	}
@@ -48,24 +49,33 @@ void        modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::s
 				{
 					vec[i].handleMode(mode, param);
 					std::cout << HCYN << "User: " HBLU "[" HCYN << cUser << HBLU "]" HCYN  " operator in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " changed the mode to: " << mode << std::endl;
-					
-					serv.sendToClient(c.get_fd(), ":Channel ");
-					serv.sendToClient(c.get_fd(), channelName);
-					serv.sendToClient(c.get_fd(), " mode set to ");
-					serv.sendToClient(c.get_fd(), mode);
-					serv.sendToClient(c.get_fd(), "\n");
-					serv.sendToClient(c.get_fd(), vec[i].getChanInfo());
+
+					std::vector<std::string> members = vec[i].getUsers();
+					std::string modeMsg = ":" + cUser + " MODE " + channelName
+						+ " " + mode + (param.empty() ? "" : " " + param)
+						+ "\r\n";
+					for (size_t m = 0; m < members.size(); m++)
+					{
+						std::string memberNick = members[m];
+						if (!memberNick.empty() && memberNick[0] == '@')
+							memberNick = memberNick.substr(1);
+						int fd = serv.findFdByNickname(memberNick);
+						if (fd != -1)
+							serv.sendToClient(fd, modeMsg);
+					}
 					vec[i].printStatus();
 					return ;
 				}
 				else
 				{
+					serv.sendToClient(c.get_fd(), err_chanoprivsneeded(cUser, channelName));
 					std::cout << HCYN << "User: " HBLU "[" HCYN << cUser << HBLU "]" HCYN  " is not an operator in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN << std::endl;
 					return ;
 				}
 			}
 			else
 			{
+				serv.sendToClient(c.get_fd(), err_notonchannel(cUser, channelName));
 				std::cout << HCYN << "User: " HBLU "[" HCYN << cUser << HBLU "]" HCYN  " is not in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN << std::endl;
 				return ;
 			}

@@ -3,6 +3,7 @@
 # include "Channel.hpp"
 # include "Server.hpp"
 # include "Client.hpp"
+# include "Replies.hpp"
 
 class topicCommand
 {

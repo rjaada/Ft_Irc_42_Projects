@@ -135,14 +135,19 @@ void server::removeClientFromChannels(std::string nickname)
 {
 	for (size_t i = 0; i < this->channels.size(); i++)
 	{
-		if (!findInChanUserList(this->channels[i].getUsers(), nickname))
+		if (!findInChanUserList(this->channels[i].getUsers(), nickname)
+			&& !findInChanUserList(this->channels[i].getUsers(),
+				"@" + nickname))
 			continue ;
 		std::vector<std::string> members = this->channels[i].getUsers();
 		for (size_t m = 0; m < members.size(); m++)
 		{
-			if (members[m] == nickname)
+			std::string memberNick = members[m];
+			if (!memberNick.empty() && memberNick[0] == '@')
+				memberNick = memberNick.substr(1);
+			if (memberNick == nickname)
 				continue ;
-			int memberFd = findFdByNickname(members[m]);
+			int memberFd = findFdByNickname(memberNick);
 			if (memberFd != -1)
 				sendToClient(memberFd, ":" + nickname
 					+ " QUIT :Client quit\r\n");
@@ -264,7 +269,9 @@ void server::handlePrivmsgChannel(client &c, std::string channelName,
 		return ;
 	}
 	int i = getFromServChanListPos(this->channels, channelName);
-	if (!findInChanUserList(this->channels[i].getUsers(), c.get_nickname()))
+	if (!findInChanUserList(this->channels[i].getUsers(), c.get_nickname())
+		&& !findInChanUserList(this->channels[i].getUsers(),
+			"@" + c.get_nickname()))
 	{
 		sendToClient(c.get_fd(), err_cannotsendtochan(channelName));
 		return ;
@@ -272,9 +279,14 @@ void server::handlePrivmsgChannel(client &c, std::string channelName,
 	std::vector<std::string> members = this->channels[i].getUsers();
 	for (size_t m = 0; m < members.size(); m++)
 	{
-		if (members[m] == c.get_nickname())
+		// operators are stored as "@nick" in the channel roster, but
+		// clients are still looked up by their plain nickname
+		std::string memberNick = members[m];
+		if (!memberNick.empty() && memberNick[0] == '@')
+			memberNick = memberNick.substr(1);
+		if (memberNick == c.get_nickname())
 			continue ;
-		int fd = findFdByNickname(members[m]);
+		int fd = findFdByNickname(memberNick);
 		if (fd != -1)
 			sendToClient(fd, ":" + c.get_nickname() + " PRIVMSG "
 				+ channelName + " " + text + "\r\n");
@@ -291,7 +303,9 @@ void server::handleJoin(client &c, std::vector<std::string> params)
 	if (!findInServChanList(this->channels, channelName))
 		return ; // exec always creates the channel if it didn't exist
 	int i = getFromServChanListPos(this->channels, channelName);
-	if (!findInChanUserList(this->channels[i].getUsers(), c.get_nickname()))
+	if (!findInChanUserList(this->channels[i].getUsers(), c.get_nickname())
+		&& !findInChanUserList(this->channels[i].getUsers(),
+			"@" + c.get_nickname()))
 	{
 		// join was refused -- figure out which restriction blocked it
 		if (this->channels[i].isModeI())
@@ -305,7 +319,12 @@ void server::handleJoin(client &c, std::vector<std::string> params)
 	std::vector<std::string> members = this->channels[i].getUsers();
 	for (size_t m = 0; m < members.size(); m++)
 	{
-		int fd = findFdByNickname(members[m]);
+		// operators are stored as "@nick" in the channel roster, but
+		// clients are still looked up by their plain nickname
+		std::string memberNick = members[m];
+		if (!memberNick.empty() && memberNick[0] == '@')
+			memberNick = memberNick.substr(1);
+		int fd = findFdByNickname(memberNick);
 		if (fd != -1)
 			sendToClient(fd, ":" + c.get_nickname() + " JOIN " + channelName
 				+ "\r\n");

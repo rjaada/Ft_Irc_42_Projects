@@ -34,6 +34,7 @@ void	topicCommandExec(std::vector<Channel> &vec, std::string userName, std::stri
 	std::cout << HCYN << "----------------- In topicCommandExec ----------------" << std::endl;
 	if(!findInServChanList(vec, channelName))
 	{
+		serv.sendToClient(c.get_fd(), err_nosuchchannel(userName, channelName));
 		std::cout << HBLU "[" HCYN  << channelName <<  HBLU "]" HCYN " channel not on list!" << std::endl;
 		return ;
 	}
@@ -46,32 +47,48 @@ void	topicCommandExec(std::vector<Channel> &vec, std::string userName, std::stri
 			{
 				if (params == 2)
 				{
+					if (!newTopic.empty() && newTopic[0] == ':')
+						newTopic = newTopic.substr(1);
 					if (vec[i].isModeT())
 					{
 						if (!findInChanUserList(vec[i].getOps(), '@' + userName))
 						{
+							serv.sendToClient(c.get_fd(), err_chanoprivsneeded(userName, channelName));
 							std::cout <<  HBLU "[" HCYN << channelName <<  HBLU "]" HCYN " channel topic change is restricted!" << std::endl;
 							return ;
 						}
 					}
 					vec[i].changeChannelTopic(newTopic);
-					serv.sendToClient(c.get_fd(), vec[i].getChanInfo());
+					std::vector<std::string> members = vec[i].getUsers();
+					std::string topicMsg = ":" + userName + " TOPIC " + channelName
+						+ " :" + newTopic + "\r\n";
+					for (size_t m = 0; m < members.size(); m++)
+					{
+						std::string memberNick = members[m];
+						if (!memberNick.empty() && memberNick[0] == '@')
+							memberNick = memberNick.substr(1);
+						int fd = serv.findFdByNickname(memberNick);
+						if (fd != -1)
+							serv.sendToClient(fd, topicMsg);
+					}
 					vec[i].printStatus();
 					return ;
 				}
 				if (params == 1)
 				{
-					serv.sendToClient(c.get_fd(), ":Topic of ");
-					serv.sendToClient(c.get_fd(), channelName);
-					serv.sendToClient(c.get_fd(), " is ");
-					serv.sendToClient(c.get_fd(), vec[i].getTopic());
-					serv.sendToClient(c.get_fd(), "\n");
+					if (vec[i].getTopic().empty())
+						serv.sendToClient(c.get_fd(), rpl_notopic(userName, channelName));
+					else
+						serv.sendToClient(c.get_fd(), rpl_topic(userName, channelName, vec[i].getTopic()));
 					std::cout <<  HBLU "[" HCYN << channelName <<  HBLU "]" HCYN " topic: " << vec[i].getTopic() << std::endl;
 					return ;
 				}
 			}
 			else
+			{
+				serv.sendToClient(c.get_fd(), err_notonchannel(userName, channelName));
 				std::cout << HCYN << "User: " HBLU "[" HCYN << userName <<  HBLU "]" HCYN  " cant get get the topic if not in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN << std::endl;
+			}
 		}
 	}
 }

@@ -32,6 +32,15 @@ std::string rpl_namreply(std::string nick, std::string channel,
 	std::string names);
 std::string rpl_endofnames(std::string nick, std::string channel);
 
+// CHANNEL (PART/KICK/MODE/TOPIC/INVITE)
+std::string err_chanoprivsneeded(std::string nick, std::string channel);
+std::string err_notonchannel(std::string nick, std::string channel);
+std::string err_nosuchchannel(std::string nick, std::string channel);
+std::string err_useronchannel(std::string nick, std::string user,
+	std::string channel);
+std::string rpl_inviting(std::string nick, std::string target,
+	std::string channel);
+
 // REGISTRATION
 std::string rpl_welcome(std::string target);
 std::string err_passwdmismatch();

@@ -34,6 +34,7 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 	std::cout << HCYN << "----------------- In inviteCommandExec ---------------" << std::endl;
 	if(!findInServChanList(vec, channelName))
 	{
+		serv.sendToClient(c.get_fd(), err_nosuchchannel(cUser, channelName));
 		std::cout << HBLU "[" HCYN  << channelName << HBLU "]" HCYN  " channel not on list!" << std::endl;
 		return ;
 	}
@@ -44,41 +45,32 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 		{
 			if (findInChanUserList(vec[i].getUsers(), userName) || findInChanUserList(vec[i].getUsers(), '@' + userName))
 			{
+				serv.sendToClient(c.get_fd(), err_useronchannel(cUser, userName, channelName));
 				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " is already in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel by user: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN  << std::endl;
 				return ;
 			}
 			if (findInChanUserList(vec[i].getKicked(), userName))
 			{
 				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " has already been kick from "  HBLU "[" HCYN << channelName << HBLU "]" << std::endl;
-				serv.sendToClient(c.get_fd(), ":You can't invite ");
-				serv.sendToClient(c.get_fd(), cUser);
-				serv.sendToClient(c.get_fd(), " to ");
-				serv.sendToClient(c.get_fd(), channelName);
-				serv.sendToClient(c.get_fd(), "because they have been kicked from the channel!\n");
+				serv.sendToClient(c.get_fd(), ":ircserv NOTICE " + cUser + " :Can't invite "
+					+ userName + " to " + channelName
+					+ ", they have been kicked from the channel\r\n");
 				return ;
 			}
 			if (findInChanUserList(vec[i].getUsers(), cUser) || findInChanUserList(vec[i].getUsers(), '@' + cUser))
 			{
 				vec[i].invitedToChannel(userName);
 				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " was invited to "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel by user: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN  << std::endl;
-				serv.sendToClient(c.get_fd(), ":You have invited ");
-				serv.sendToClient(c.get_fd(), userName);
-				serv.sendToClient(c.get_fd(), " to ");
-				serv.sendToClient(c.get_fd(), channelName);
-				serv.sendToClient(c.get_fd(), "\n");
-				serv.sendToClient(c.get_fd(), vec[i].getChanInfo());
+				serv.sendToClient(c.get_fd(), rpl_inviting(cUser, userName, channelName));
 				int	iUserFd = serv.findFdByNickname(userName);
-				serv.sendToClient(iUserFd, ":You have been invited to ");
-				serv.sendToClient(iUserFd, channelName);
-				serv.sendToClient(iUserFd, " by ");
-				serv.sendToClient(iUserFd, cUser);
-				serv.sendToClient(iUserFd, ". Welcome!\n");
-				serv.sendToClient(iUserFd, vec[i].getChanInfo());
+				serv.sendToClient(iUserFd, ":" + cUser + " INVITE " + userName
+					+ " :" + channelName + "\r\n");
 				vec[i].printStatus();
 				return ;
 			}
 			else
 			{
+				serv.sendToClient(c.get_fd(), err_notonchannel(cUser, channelName));
 				std::cout << HCYN << "User: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN " can't invite anybody because they are not in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel!" << std::endl;
 				return ;
 			}

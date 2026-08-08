@@ -69,6 +69,38 @@ std::string rpl_endofnames(std::string nick, std::string channel)
 		+ " :End of /NAMES list\r\n");
 }
 
+// CHANNEL (PART/KICK/MODE/TOPIC/INVITE)
+std::string err_chanoprivsneeded(std::string nick, std::string channel)
+{
+	return (":ircserv 482 " + nick + " " + channel
+		+ " :You're not channel operator\r\n");
+}
+
+std::string err_notonchannel(std::string nick, std::string channel)
+{
+	return (":ircserv 442 " + nick + " " + channel
+		+ " :You're not on that channel\r\n");
+}
+
+std::string err_nosuchchannel(std::string nick, std::string channel)
+{
+	return (":ircserv 403 " + nick + " " + channel
+		+ " :No such channel\r\n");
+}
+
+std::string err_useronchannel(std::string nick, std::string user,
+	std::string channel)
+{
+	return (":ircserv 443 " + nick + " " + user + " " + channel
+		+ " :is already on channel\r\n");
+}
+
+std::string rpl_inviting(std::string nick, std::string target,
+	std::string channel)
+{
+	return (":ircserv 341 " + nick + " " + target + " " + channel + "\r\n");
+}
+
 // REGISTRATION
 std::string rpl_welcome(std::string target)
 {
