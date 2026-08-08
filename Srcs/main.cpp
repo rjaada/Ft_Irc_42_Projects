@@ -16,6 +16,7 @@ static void		handleSignal(int signal)
 {
 	if (signal == SIGINT || signal == SIGQUIT)
 		std::cout << "Bye bye!" << std::endl;
+	/////free stuff????????????? idk
 	exit(0);
 }
 

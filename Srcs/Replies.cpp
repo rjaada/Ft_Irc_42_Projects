@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rjaada <rjaada@student.42.fr>              #+#  +:+       +#+        */
+/*   By: romorale <romorale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-07-25 14:47:37 by rjaada            #+#    #+#             */
-/*   Updated: 2026-07-25 14:47:37 by rjaada           ###   ########.fr       */
+/*   Created: 2026/07/25 14:47:37 by rjaada            #+#    #+#             */
+/*   Updated: 2026/08/08 18:10:54 by romorale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@ std::string err_inviteonlychan(std::string channel)
 std::string err_badchannelkey(std::string channel)
 {
 	return (":ircserv 475 " + channel + " :Cannot join channel (+k)\r\n");
+}
+
+std::string err_bannedfromchan(std::string channel)
+{
+	return (":ircserv 474 " + channel + " :Cannot join channel (+b)\r\n");
 }
 
 std::string rpl_notopic(std::string nick, std::string channel)

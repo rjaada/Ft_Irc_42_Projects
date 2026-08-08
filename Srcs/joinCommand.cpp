@@ -80,7 +80,20 @@ void	joinCommandExec(std::vector<Channel> &vec, std::string userName, std::strin
 					return ;
 				}
 			}
-			vec[i].joinChannel(userName);
+			if (findInChanUserList(vec[i].getKicked(), userName) || findInChanUserList(vec[i].getKicked(), '@' + userName))
+			{
+				serv.sendToClient(c.get_fd(), err_bannedfromchan(channelName));
+				std::cout << HBLU "[" HCYN << userName << HBLU "]" HCYN " cannot join " HBLU "[" HCYN << channelName << HBLU "]" HCYN " because they have been kicked!" << std::endl;
+				return ;
+			}
+			if (!findInChanUserList(vec[i].getUsers(), userName) && !findInChanUserList(vec[i].getUsers(), '@' + userName))
+				vec[i].joinChannel(userName);
+			else
+			{
+				serv.sendToClient(c.get_fd(), err_useronchannel(c.get_nickname(), userName, channelName));
+				std::cout << HBLU "[" HCYN << userName << HBLU "]" HCYN " already in channel " HBLU "[" HCYN << channelName << HBLU "]" HCYN " !" << std::endl;
+				return ;
+			}
 			vec[i].printStatus();
 		}
 	}

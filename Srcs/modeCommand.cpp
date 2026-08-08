@@ -47,7 +47,7 @@ void        modeCommandExec(std::vector<Channel> &vec, std::string cUser, std::s
 			{
 				if (findInChanUserList(vec[i].getOps(), '@' + cUser))
 				{
-					vec[i].handleMode(mode, param);
+					vec[i].handleMode(mode, param, c, serv);
 					std::cout << HCYN << "User: " HBLU "[" HCYN << cUser << HBLU "]" HCYN  " operator in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " changed the mode to: " << mode << std::endl;
 
 					std::vector<std::string> members = vec[i].getUsers();

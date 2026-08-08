@@ -43,15 +43,22 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 		int i = getFromServChanListPos(vec, channelName);
 		if (i != -1)
 		{
+			int	userExist = serv.findFdByNickname(userName);
+			if (userExist == -1)
+			{
+				serv.sendToClient(c.get_fd(), err_nosuchnick(userName));
+				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " not in server! "  << std::endl;
+				return ;
+			}
 			if (findInChanUserList(vec[i].getUsers(), userName) || findInChanUserList(vec[i].getUsers(), '@' + userName))
 			{
 				serv.sendToClient(c.get_fd(), err_useronchannel(cUser, userName, channelName));
-				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " is already in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel by user: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN  << std::endl;
+				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " is already in "  HBLU "[" HCYN << channelName << HBLU "]" << std::endl;
 				return ;
 			}
 			if (findInChanUserList(vec[i].getKicked(), userName))
 			{
-				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " has already been kick from "  HBLU "[" HCYN << channelName << HBLU "]" << std::endl;
+				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " has already been kicked from "  HBLU "[" HCYN << channelName << HBLU "]" << std::endl;
 				serv.sendToClient(c.get_fd(), ":ircserv NOTICE " + cUser + " :Can't invite "
 					+ userName + " to " + channelName
 					+ ", they have been kicked from the channel\r\n");

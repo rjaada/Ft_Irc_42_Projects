@@ -6,7 +6,12 @@
 # include <cstdlib>
 # include <unistd.h>
 # include <sstream>
-# include "Colors.hpp"
+# include "../Includes/Colors.hpp"
+# include "../Includes/Parser.hpp"
+# include "../Includes/Replies.hpp"
+
+class client;
+class server;
 
 class Channel
 {
@@ -57,11 +62,11 @@ class Channel
 		void						removeChannelOper(std::string user);
 		void						changeChannelTopic(std::string newTopic);
 
-		void						handleMode(std::string mode, std::string param);
+		void						handleMode(std::string mode, std::string param, client &c, server &serv);
 		void						handleModeI(std::string mode);
 		void						handleModeT(std::string mode);
 		void						handleModeK(std::string mode, std::string key);
-		void						handleModeO(std::string mode, std::string newOper);
+		void						handleModeO(std::string mode, std::string newOper, client &c, server &serv);
 		void						handleModeL(std::string mode, std::string limit);
 
 		void						printStatus();

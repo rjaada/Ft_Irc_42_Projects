@@ -1,4 +1,6 @@
 #include "Channel.hpp"
+#include "Client.hpp"
+#include "Server.hpp"
 
 Channel::Channel() : _chanName("Channel"), _users(), _operators(), _kickedUsers(), _topic("Default topic"), _key("Default key"), _userLimit(10), _iMode(false), _tMode(false), _kMode(false)
 {}
@@ -196,8 +198,8 @@ void	Channel::invitedToChannel(std::string newUser)
 	}
 	else
 	{
-			std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newUser << HRED "]" HYEL  " can't join the channel! limit is " << getLimit() << std::endl;	
-			return ;
+		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newUser << HRED "]" HYEL  " can't join the channel! limit is " << getLimit() << std::endl;	
+		return ;
 	}
 }
 
@@ -224,8 +226,8 @@ void	Channel::joinChannel(std::string newUser)
 		}
 		else
 		{
-				std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newUser << HRED "]" HYEL  " can't join the channel! limit is " << getLimit() << std::endl;	
-				return ;
+			std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newUser << HRED "]" HYEL  " can't join the channel! limit is " << getLimit() << std::endl;	
+			return ;
 		}
 	}
 	else
@@ -262,7 +264,6 @@ void	Channel::kickFromChannel(std::string user)
 			std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL  " kicked from channel!" << std::endl;	
 		}
 		else
-			
 			std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << user << HRED "]" HYEL " not in channel!" << std::endl;
 	}
 	else
@@ -354,9 +355,15 @@ void	Channel::handleModeK(std::string mode, std::string key)
 	}
 }
 
-void	Channel::handleModeO(std::string mode, std::string newOper)
+void	Channel::handleModeO(std::string mode, std::string newOper, client &c, server &serv)
 {
 	std::cout << HYEL << "--- In handleMode O ---" << std::endl;
+	if (!findInVec(_users, '@' + newOper) && !findInVec(_users, newOper))
+	{
+		std::cout << HYEL << "In channel: " HRED "[" HYEL << _chanName << HRED "]" HYEL " user: "  HRED "[" HYEL << newOper << HRED "]" HYEL  " is not in the channel!"<< std::endl;
+		serv.sendToClient(c.get_fd(), err_nosuchnick(newOper));
+		return ;
+	}
 	if (mode == "+o" && (!findInVec(_operators, '@' + newOper)))
 	{
 		removeFromVec(_users, newOper);
@@ -413,7 +420,7 @@ void	Channel::handleModeL(std::string mode, std::string limit)
 	}
 }
 
-void	Channel::handleMode(std::string mode, std::string param)
+void	Channel::handleMode(std::string mode, std::string param, client &c, server &serv)
 {
 	std::cout << HYEL << "--- In handleMode ---" << std::endl;
 	if (mode == "+i" || mode == "-i")
@@ -433,7 +440,7 @@ void	Channel::handleMode(std::string mode, std::string param)
 	}
 	if (mode == "+o" || mode == "-o")
 	{
-		handleModeO(mode, param);
+		handleModeO(mode, param, c, serv);
 		return ;
 	}
 	if (mode == "+l" || mode == "-l")

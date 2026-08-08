@@ -1,9 +1,11 @@
 #ifndef MODECOMMAND_HPP
 # define MODECOMMAND_HPP
 # include "Channel.hpp"
-# include "Server.hpp"
-# include "Client.hpp"
-# include "Replies.hpp"
+# include "../Includes/Colors.hpp"
+# include "../Includes/Client.hpp"
+# include "../Includes/Parser.hpp"
+# include "../Includes/Replies.hpp"
+# include "../Includes/Server.hpp"
 
 class modeCommand
 {
