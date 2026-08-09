@@ -226,6 +226,11 @@ int Parser::joinParaCount()
 			if (_rawStr[4] != ' ')
 				return (-1);
 		}
+		if (strSize > 5)
+		{
+			if (_rawStr[5] != '#')
+				return (0);
+		}
 		if (_rawStr[i])
 		{
 			if (_rawStr[i] == ' ')
