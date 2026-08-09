@@ -12,11 +12,16 @@
 #include <cstdlib>
 #include "Server.hpp"
 
+volatile std::sig_atomic_t gRunning = 1; //++++++ added this!!!!!!
+
 static void		handleSignal(int signal)
 {
 	if (signal == SIGINT || signal == SIGQUIT)
+	{
 		std::cout << "\nBye bye!" << std::endl;
-	exit(0);
+		gRunning = 0; //++++++ added this!!!!!!
+	}
+	//exit(0); //------
 }
 
 void	argChecker(char **av)

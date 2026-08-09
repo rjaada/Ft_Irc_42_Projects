@@ -6,7 +6,7 @@
 /*   By: romorale <romorale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 13:55:21 by rjaada            #+#    #+#             */
-/*   Updated: 2026/08/09 14:43:55 by romorale         ###   ########.fr       */
+/*   Updated: 2026/08/09 18:57:04 by romorale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@
 #include "../Includes/topicCommand.hpp"
 #include "../Includes/modeCommand.hpp"
 #include <sstream>
+#include <cerrno>
+#include <cstdio>
+#include <csignal>
+
+extern volatile std::sig_atomic_t gRunning; //++++++ added this!!!!!!
 
 // rosa work on parsing here, dont touch
 void server::processLine(client &c, std::string line)
@@ -129,6 +134,22 @@ server &server::operator=(server const &other)
 
 server::~server()
 {
+	//++++++ added this!!!!!!
+	    // close all connected client sockets
+    for (std::map<int, client>::const_iterator it = clients.begin();
+         it != clients.end(); ++it)
+    {
+        close(it->first);
+    }
+
+    // close the listening socket
+    if (serverSocket >= 0)
+        close(serverSocket);
+
+    // release container memory
+    clients.clear();
+    channels.clear();
+	//++++++ up to here!!!!!!
 }
 
 void server::removeClientFromChannels(std::string nickname)
@@ -378,11 +399,19 @@ void server::handlePrivmsg(client &c, std::vector<std::string> params)
 
 void server::run()
 {
-	while (1)
+	//while (1) ------  commented this!!!!!! an replaced with:
+	while(gRunning) //++++++ added this!!!!!!
 	{
 		// only poll() call in the whole prog, blocks till something is ready
-		poll(this->fds, this->nfds, -1);
-
+		//poll(this->fds, this->nfds, -1);  ------ commented this!!!!!! an replaced with:
+ 		int ret = poll(this->fds, this->nfds, -1);//++++++ this!!!!!!
+        if (ret < 0)//++++++ added this!!!!!!
+        {
+            if (errno == EINTR)
+                break;
+            perror("poll");
+            break;
+        }//++++++ up to here!!!!!!
 		for (int i = 0; i < this->nfds; i++)
 		{
 			// this fd is ready to receive bytes without blocking, try to flush outBuffer
