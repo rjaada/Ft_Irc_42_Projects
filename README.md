@@ -182,7 +182,22 @@ Useful ft_irc introduction guide by bhagenlo [Link](https://haglobah.github.io/M
 
 "Come on bro, let's recode on Discord" video by Nathan [Link](https://www.youtube.com/watch?v=hDLvHKEASRE)
 
+Useful info:
+
+[Link](https://www.tutorialspoint.com/unix_sockets/what_is_socket.htm)
+
+[Link](https://beej.us/guide/bgnet/html/)
+
+[Link](https://www.rfc-editor.org/)
+
+[Link](https://www.geeksforgeeks.org/cpp/socket-programming-in-cpp/)
+
+[Link](https://medium.com/@ahmadesekak/setting-up-a-server-using-c-sockets-124e404593c9)
+
+[Link](https://hyjae.gitbooks.io/socket-programming/content/)
+
 ## AI Resources
+
 [Claude](https://claude.ai)
 
 We haved used AI Tools to help us develop our program by trying to understand concepts, explaining logic bugs and trying to fix some memory leaks.
