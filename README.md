@@ -109,6 +109,7 @@ PASS <password>
 ### NICK
 ```
 NICK <nickname>
+NICK <new_nickname> <nickname> 
 ```
 ### USER
 ```
