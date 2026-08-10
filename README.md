@@ -155,7 +155,7 @@ MODE <channel> -i
 MODE <channel> +t
 MODE <channel> -t
 
-MODE <channel> +k <key>
+MODE <channel> +k <new_key>
 MODE <channel> -k
 
 MODE <channel> +o <user>
