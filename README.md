@@ -184,17 +184,17 @@ Useful ft_irc introduction guide by bhagenlo [Link](https://haglobah.github.io/M
 
 Useful info:
 
-[Link](https://www.tutorialspoint.com/unix_sockets/what_is_socket.htm)
+"What is a Socket?" [Link](https://www.tutorialspoint.com/unix_sockets/what_is_socket.htm)
 
-[Link](https://beej.us/guide/bgnet/html/)
+"Beej's Guide to Network Programming" [Link](https://beej.us/guide/bgnet/html/)
 
-[Link](https://www.rfc-editor.org/)
+"The official home of RFCs" [Link](https://www.rfc-editor.org/)
 
-[Link](https://www.geeksforgeeks.org/cpp/socket-programming-in-cpp/)
+"Socket Programming in C++" [Link](https://www.geeksforgeeks.org/cpp/socket-programming-in-cpp/)
 
-[Link](https://medium.com/@ahmadesekak/setting-up-a-server-using-c-sockets-124e404593c9)
+"Setting up a server using C++ sockets!" [Link](https://medium.com/@ahmadesekak/setting-up-a-server-using-c-sockets-124e404593c9)
 
-[Link](https://hyjae.gitbooks.io/socket-programming/content/)
+"Socket Address Structure" [Link](https://hyjae.gitbooks.io/socket-programming/content/)
 
 ## AI Resources
 
