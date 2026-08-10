@@ -64,13 +64,13 @@ following features:
 
 - Then, you have to implement the commands that are specific to channel operators:
 
-* KICK - Eject a client from the channel
+** KICK - Eject a client from the channel
 
-* INVITE - Invite a client to a channel
+** INVITE - Invite a client to a channel
 
-∗ TOPIC - Change or view the channel topic
+** TOPIC - Change or view the channel topic
 
-∗ MODE - Change the channel’s mode:
+** MODE - Change the channel’s mode:
 
 · i: Set/remove Invite-only channel
 
