@@ -16,7 +16,7 @@ It’s always beneficial to understand these protocols.
 
 
 
-RFC1459 Internet Relay Chat Protocol  [łink](https://www.rfc-editor.org/info/rfc1459/)
+RFC1459 Internet Relay Chat Protocol  [Link](https://www.rfc-editor.org/info/rfc1459/)
 
 ### What is IRC?
 
