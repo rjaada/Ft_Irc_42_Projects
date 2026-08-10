@@ -86,6 +86,12 @@ void	joinCommandExec(std::vector<Channel> &vec, std::string userName, std::strin
 				std::cout << HBLU "[" HCYN << userName << HBLU "]" HCYN " cannot join " HBLU "[" HCYN << channelName << HBLU "]" HCYN " because they have been kicked!" << std::endl;
 				return ;
 			}
+			if (vec[i].getUsers().size() + 1 >= vec[i].getLimit())
+			{
+				serv.sendToClient(c.get_fd(), err_channelisfull(channelName));
+				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN " can't join because "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " has reached user limit!" << std::endl;
+				return ;
+			}
 			if (!findInChanUserList(vec[i].getUsers(), userName) && !findInChanUserList(vec[i].getUsers(), '@' + userName))
 				vec[i].joinChannel(userName);
 			else

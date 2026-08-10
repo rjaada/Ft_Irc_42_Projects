@@ -64,10 +64,16 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 					+ ", they have been kicked from the channel\r\n");
 				return ;
 			}
-			if (findInChanUserList(vec[i].getUsers(), cUser) || findInChanUserList(vec[i].getUsers(), '@' + cUser))
+			if (vec[i].getUsers().size() + 1 >=  vec[i].getLimit())
+			{
+				serv.sendToClient(c.get_fd(), err_channelisfull(channelName));
+				std::cout << HCYN << "User: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN " can't invite anybody because "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " has reached user limit!" << std::endl;
+				return ;
+			}
+			if (findInChanUserList(vec[i].getUsers(), '@' + cUser))
 			{
 				vec[i].invitedToChannel(userName);
-				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " was invited to "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel by user: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN  << std::endl;
+				std::cout << HCYN << "User: "  HBLU "[" HCYN << userName << HBLU "]" HCYN  " was invited to "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel by operator: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN  << std::endl;
 				serv.sendToClient(c.get_fd(), rpl_inviting(cUser, userName, channelName));
 				int	iUserFd = serv.findFdByNickname(userName);
 				serv.sendToClient(iUserFd, ":" + cUser + " INVITE " + userName
@@ -77,8 +83,8 @@ void        inviteCommandExec(std::vector<Channel> &vec, std::string userName, s
 			}
 			else
 			{
-				serv.sendToClient(c.get_fd(), err_notonchannel(cUser, channelName));
-				std::cout << HCYN << "User: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN " can't invite anybody because they are not in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel!" << std::endl;
+				serv.sendToClient(c.get_fd(), err_chanoprivsneeded(cUser, channelName));
+				std::cout << HCYN << "User: "  HBLU "[" HCYN << cUser << HBLU "]" HCYN " can't invite anybody because they are not an operator in "  HBLU "[" HCYN << channelName << HBLU "]" HCYN  " channel!" << std::endl;
 				return ;
 			}
 		}

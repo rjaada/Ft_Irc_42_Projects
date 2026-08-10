@@ -6,7 +6,7 @@
 /*   By: romorale <romorale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 11:18:49 by rjaada            #+#    #+#             */
-/*   Updated: 2026/08/09 18:57:27 by romorale         ###   ########.fr       */
+/*   Updated: 2026/08/10 16:02:33 by romorale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <sys/socket.h>
 # include <unistd.h>
 # include <vector>
-# include <cerrno> //++++++ added this!!!!
+# include <cerrno>
 
 class server
 {

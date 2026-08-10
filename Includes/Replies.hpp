@@ -6,7 +6,7 @@
 /*   By: romorale <romorale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 14:43:33 by rjaada            #+#    #+#             */
-/*   Updated: 2026/08/08 18:11:22 by romorale         ###   ########.fr       */
+/*   Updated: 2026/08/10 16:04:27 by romorale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ std::string err_cannotsendtochan(std::string target);
 std::string err_inviteonlychan(std::string channel);
 std::string err_badchannelkey(std::string channel);
 std::string err_bannedfromchan(std::string channel);
+std::string err_channelisfull(std::string channel);
 std::string rpl_notopic(std::string nick, std::string channel);
 std::string rpl_topic(std::string nick, std::string channel,
 	std::string topic);

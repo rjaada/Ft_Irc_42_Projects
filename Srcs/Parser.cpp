@@ -229,7 +229,7 @@ int Parser::joinParaCount()
 		if (strSize > 5)
 		{
 			if (_rawStr[5] != '#')
-				return (0);
+				return (-2);
 		}
 		if (_rawStr[i])
 		{

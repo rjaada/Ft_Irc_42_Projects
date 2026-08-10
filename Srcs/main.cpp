@@ -1,27 +1,22 @@
 #include <iostream>
-//#include <string>
-//#include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <exception>
 #include <csignal>
-
-//#include <cctype>
 #include <cstdlib>
 #include "Server.hpp"
 
-volatile std::sig_atomic_t gRunning = 1; //++++++ added this!!!!!!
+volatile std::sig_atomic_t gRunning = 1;
 
 static void		handleSignal(int signal)
 {
 	if (signal == SIGINT || signal == SIGQUIT)
 	{
 		std::cout << "\nBye bye!" << std::endl;
-		gRunning = 0; //++++++ added this!!!!!!
+		gRunning = 0;
 	}
-	//exit(0); //------
 }
 
 void	argChecker(char **av)
@@ -73,7 +68,6 @@ int main(int ac, char **av)
 	}
 	catch (const std::exception &e)
 	{
-		//close fds here
 		std::cerr << "ERROR: " << e.what() << std::endl;
 		return (1);
 	}
