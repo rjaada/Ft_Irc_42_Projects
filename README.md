@@ -5,26 +5,26 @@ _This project has been created as part of the 42 curriculum by rjaada and romora
 
 ## Description
 
-###Summary
+### Summary
 
 This project is about creating your own IRC server.
 You will use an actual IRC client to connect to your server and test it.
 The Internet is governed by solid standard protocols that allow connected computers to interact with each other.
 It’s always beneficial to understand these protocols.
 
-###What is RFC?
+### What is RFC?
 
 
-###What is IRC?
+### What is IRC?
 
 Internet Relay Chat or IRC is a text-based communication protocol on the Internet.
 It offers real-time messaging that can be either public or private. Users can exchange direct messages and join group channels.
 IRC clients connect to IRC servers in order to join channels. IRC servers are connected together to form a network.
 
-##What is a server?
+## What is a server?
 
 
-###Project requirements
+### Project requirements
 
 You are required to develop an IRC server using the C++ 98 standard.
 You must not develop an IRC client.
