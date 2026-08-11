@@ -3,7 +3,8 @@
 _This project has been created as part of the 42 curriculum by rjaada and romorale._
 
 # ft_irc
-Internet Relay Chat
+Creating an Internet Relay Chat server.
+
 ## Description
 
 ### Summary
