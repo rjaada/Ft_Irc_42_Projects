@@ -171,7 +171,7 @@ The KICK command can be used to forcibly remove a user from a channel. It 'kicks
 KICK <channel> <user>
 ```
 ### TOPIC
-The TOPIC message is used to change or view the topic of a channel. The topic for channel <channel> is returned if there is no new <topic> given. If the <topic> parameter is present, the topic for that channel will be changed, if the channel modes permit this action.
+The TOPIC message is used to change or view the topic of a channel. The topic for channel <channel> is returned if there is no new <topic> given. If the <topic> parameter is present, the topic for that channel will be changed if the channel modes permit this action.
 ```
 TOPIC <channel>
 TOPIC <channel> :<new_topic>
