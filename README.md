@@ -120,7 +120,7 @@ When back at the network list, select the server and click connect. You're now c
 
 
 
-Commands are typed out differently here. For example JOIN is /join. Also, you don't need to use the command PRIVMSG for messaging, just use the different chat windows to send messages or commands to specific channels or users.
+Commands are typed out differently here. For example, JOIN is /join. Also, you don't need to use the command PRIVMSG for messaging, just use the different chat windows to send messages or commands to specific channels or users.
 
 ![channel](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/channel/2.png)
 
