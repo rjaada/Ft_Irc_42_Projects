@@ -161,7 +161,7 @@ The PART message causes the client sending the message to be removed from the li
 PART <channel>
 ```
 ### INVITE
-Is used to invite users to a channel. The parameter <nickname> is the nickname of the person to be invited to the target channel <channel>.
+Is used to invite users to a channel. The parameter "nickname" is the nickname of the person to be invited to the target channel "channel".
 ```
 INVITE <nickname> <channel>
 ```
@@ -171,13 +171,13 @@ The KICK command can be used to forcibly remove a user from a channel. It 'kicks
 KICK <channel> <user>
 ```
 ### TOPIC
-The TOPIC message is used to change or view the topic of a channel. The topic for channel <channel> is returned if there is no new <topic> given. If the <topic> parameter is present, the topic for that channel will be changed if the channel modes permit this action.
+The TOPIC message is used to change or view the topic of a channel. The topic for channel "channel" is returned if there is no "new_topic" given. If the "topic" parameter is present, the topic for that channel will be changed if the channel modes permit this action.
 ```
 TOPIC <channel>
 TOPIC <channel> :<new_topic>
 ```
 ### PRIVMSG
-Is used to send private messages between users. <receiver> is the nickname of the receiver of the message. <receiver> can also be a channel.
+Is used to send private messages between users. "receiver" is the nickname of the receiver of the message. "receiver" can also be a channel.
 ```
 PRIVMSG <receiver> :<message>
 ```
