@@ -14,8 +14,6 @@ It’s always beneficial to understand these protocols.
 
 ### What is RFC?
 
-
-
 RFC1459 Internet Relay Chat Protocol  [Link](https://www.rfc-editor.org/info/rfc1459/)
 
 ### What is IRC?
@@ -34,27 +32,18 @@ You must not develop an IRC client.
 You must not implement server-to-server communication.
 
 - The server must be capable of handling multiple clients simultaneously without hanging.
-
 - Forking is prohibited. All I/O operations must be non-blocking.
-
 - Only 1 poll() (or equivalent) can be used for handling all these operations (read, write, but also listen, and so forth).
-
 - Several IRC clients exist. You have to choose one of them as a reference. Your reference client will be used during the evaluation process.
-
 - Your reference client must be able to connect to your server without encountering any error.
-
 - Communication between client and server has to be done via TCP/IP (v4 or v6).
 
-- Using your reference client with your server must be similar to using it with any official IRC server. However, you only have to implement the 
 
-following features:
+Using your reference client with your server must be similar to using it with any official IRC server. However, you only have to implement the following features:
 
 - You must be able to authenticate, set a nickname, a username, join a channel, send and receive private messages using your reference client.
-
 - All the messages sent from one client to a channel have to be forwarded to every other client that joined the channel.
-
 - You must have operators and regular users.
-
 - Then, you have to implement the commands that are specific to channel operators:
 
 - KICK - Eject a client from the channel
@@ -98,19 +87,30 @@ In this example the port number is 6667 and password is "pass1", so we connect w
 ```
 nc -C 127.0.0.1 6667
 ```
+
 To register in the server, use the commands PASS, NICK and USER in this order:
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step1.png)
 
+
 To create or join a channel, use the command JOIN:
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step2.png)
+User names starting with '@' are channel operators. 
+
 
 ### Connecting to the server with the client
-
+We are using Hexchat as the client. Open and go to Hexchat -> Network List.
+Add the new network name then click edit.
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step1.png)
 
+
+Change to localhost (127.0.01) and the port number (6667 in this example) and also fill in the password (pass1 in this example) and then close:
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step2.png)
 
+
+When back at the network list menu, click connect. Now you're connected to the server:
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step3.png)
+
+Commands are typed out differently here. JOIN is /join for example. Also don't need to use the command PRIVMSG for messaging, just use the different chat windows to send messages or commands to specific channels.
 
 ## Commands
 
