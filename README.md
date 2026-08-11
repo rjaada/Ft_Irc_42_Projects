@@ -139,7 +139,7 @@ NICK <nickname>
 NICK <new_nickname> <nickname> 
 ```
 ### USER
-Is used at the beginning of connection to specify the username, hostname, servername and realname of the new user.
+Is used at the beginning of connection to specify the username, hostname, servername, and realname of the new user.
 ```
 USER <username> <hostname> <servername> :<realname>
 ```
