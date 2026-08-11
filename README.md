@@ -73,7 +73,7 @@ com^Dman^Dd
 ## Instructions
 
 ### Running the server
-To run the server.
+To run the server:
 ```
 ./ircserv <port> <password>
 ```
@@ -81,7 +81,7 @@ To run the server.
 - password: The connection password. It will be needed by any IRC client that tries to connect to your server.
 
 ### Connecting to the server with the terminal
-In this example the port number is 6667 and password is "pass1", so we connect with:
+In this example, the port number is 6667 and password is "pass1", so we connect with:
 ```
 nc -C 127.0.0.1 6667
 ```
