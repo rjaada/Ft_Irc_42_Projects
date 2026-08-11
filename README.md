@@ -1,8 +1,9 @@
 (WIP!!!!!!!)
 
 _This project has been created as part of the 42 curriculum by rjaada and romorale._
-# ft_irc
 
+# ft_irc
+Internet Relay Chat
 ## Description
 
 ### Summary
