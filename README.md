@@ -29,7 +29,7 @@ In simple terms, a specialized computer or computer program that provides data, 
 "What is a Server? (Deepdive)" by LiveOverFlow [Link](https://www.youtube.com/watch?v=VXmvM2QtuMU)
 
 
-### Project requirements
+## Project requirements
 
 You are required to develop an IRC server using the C++ 98 standard.
 You must not develop an IRC client.
