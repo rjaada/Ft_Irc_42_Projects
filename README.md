@@ -37,6 +37,7 @@ You must not implement server-to-server communication.
 - Several IRC clients exist. You have to choose one of them as a reference. Your reference client will be used during the evaluation process.
 - Your reference client must be able to connect to your server without encountering any error.
 - Communication between client and server has to be done via TCP/IP (v4 or v6).
+- Of course, you are expected to write a clean code.
 
 
 Using your reference client with your server must be similar to using it with any official IRC server. However, you only have to implement the following features:
@@ -47,24 +48,15 @@ Using your reference client with your server must be similar to using it with an
 - Then, you have to implement the commands that are specific to channel operators:
 
 - KICK - Eject a client from the channel
-
 - INVITE - Invite a client to a channel
-
 - TOPIC - Change or view the channel topic
-
 - MODE - Change the channel’s mode:
+  - i: Set/remove Invite-only channel
+  - t: Set/remove the restrictions of the TOPIC command to channel operators
+  - k: Set/remove the channel key (password)
+  - o: Give/take channel operator privilege
+  - l: Set/remove the user limit to channel
 
-· i: Set/remove Invite-only channel
-
-· t: Set/remove the restrictions of the TOPIC command to channel operators
-
-· k: Set/remove the channel key (password)
-
-· o: Give/take channel operator privilege
-
-· l: Set/remove the user limit to channel
-
-• Of course, you are expected to write a clean code.
 
 To ensure that your server correctly processes all data sent to it, the following simple test using nc can be performed:
 ```
@@ -98,17 +90,17 @@ Channel names allways should start with '#'. User names starting with '@' are ch
 
 
 ### Connecting to the server with the client
-We are using Hexchat as the client. Open and go to Hexchat -> Network List.
-Add the new network name then click edit.
+We are using Hexchat as the client. Open and go to Hexchat -> Network List. Add the new network name then click edit.
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step1.png)
 
 
-Change to localhost (127.0.01) and the port number (6667 in this example) and also fill in the password (pass1 in this example) and then close:
+Change to localhost (127.0.0.1) and the port number (6667 in this example). Also fill in the password (pass1 in this example) and then close.
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step2.png)
 
 
-When back at the network list menu, click connect. Now you're connected to the server:
+When back at the network list, select the server and click connect. You're now connected to the server.
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step3.png)
+
 
 Commands are typed out differently here. JOIN is /join for example. Also don't need to use the command PRIVMSG for messaging, just use the different chat windows to send messages or commands to specific channels.
 
