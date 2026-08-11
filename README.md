@@ -86,29 +86,43 @@ nc -C 127.0.0.1 6667
 ```
 
 To register in the server, use the commands PASS, NICK and USER in this order:
+
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step1.png)
 
 
+
 To create or join a channel, use the command JOIN. Channel names should always start with '#'.
+
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step2.png)
+
 User names starting with '@' are channel operators.
 
 
+
 ### Connecting to the server with the client
+
 We are using Hexchat as the client. Open and go to Hexchat -> Network List. Add the new network name then click edit.
+
 ![hexchat](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step1.png)
 
 
+
 Change to localhost (127.0.0.1) and the port number (6667 in this example). Also fill in the password (pass1 in this example) and then close.
+
 ![hexchat](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step2.png)
 
 
+
 When back at the network list, select the server and click connect. You're now connected to the server.
+
 ![hexchat](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step3.png)
 
 
+
 Commands are typed out differently here. For example JOIN is /join. Also, you don't need to use the command PRIVMSG for messaging, just use the different chat windows to send messages or commands to specific channels or users.
+
 ![channel](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/channel/2.png)
+
 
 ## Commands
 
