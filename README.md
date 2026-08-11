@@ -64,15 +64,16 @@ To ensure that your server correctly processes all data sent to it, the followin
 com^Dman^Dd
 \$>
 ```
-Use ctrl+D to send the command in several parts: ’com’, then ’man’, then ’d\n’.
 
 ## Instructions
 
 ### Running the server
-To run the server
+To run the server.
 ```
 ./ircserv <port> <password>
 ```
+- port: The port number on which your IRC server will be listening for incoming IRC connections.
+- password: The connection password. It will be needed by any IRC client that tries to connect to your server.
 
 ### Connecting to the server with the terminal
 In this example the port number is 6667 and password is "pass1", so we connect with:
@@ -102,7 +103,7 @@ When back at the network list, select the server and click connect. You're now c
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step3.png)
 
 
-Commands are typed out differently here. JOIN is /join for example. Also don't need to use the command PRIVMSG for messaging, just use the different chat windows to send messages or commands to specific channels.
+Commands are typed out differently here. For example JOIN is /join. Also, you don't need to use the command PRIVMSG for messaging, just use the different chat windows to send messages or commands to specific channels or users.
 
 ## Commands
 
@@ -182,34 +183,24 @@ MODE <channel> -l
 ```
 ## Resources
 
-Guides/tutorials/blogs about the project:
+- Guides/tutorials/blogs about the project:
 
 "Small IRC Server [ft_irc 42 The Network]" by Ahmed Fatir [Link](https://medium.com/@afatir.ahmedfatir/small-irc-server-ft-irc-42-network-7cee848de6f9)
-
 "FT_IRC : Channels and Command Management" by Mohamed sarda [Link](https://medium.com/@mohamedsarda/ft-irc-channels-and-command-management-ff1ff3758a0b)
-
 "Sockets and Network Programming in C" by Mia Combeau [Link](https://www.codequoi.com/en/sockets-and-network-programming-in-c/)
-
 Useful ft_irc introduction guide by bhagenlo [Link](https://haglobah.github.io/Mastering-42/holy_graph/ft_irc.html)
-
 "Things to know" + some blogposts of the process (incomplete) [Link](https://ircgod.com/docs/irc/to_know/)
-
 "FT_IRC 42" YouTube playlist with useful videos [Link](https://www.youtube.com/playlist?list=PLHBVNH27RbWqGTL-AYMylWkNck45cxPnG)
-
 "Come on bro, let's recode on Discord" video by Nathan [Link](https://www.youtube.com/watch?v=hDLvHKEASRE)
 
-Useful info:
+
+- Useful info:
 
 "What is a Socket?" [Link](https://www.tutorialspoint.com/unix_sockets/what_is_socket.htm)
-
 "Beej's Guide to Network Programming" [Link](https://beej.us/guide/bgnet/html/)
-
 "The official home of RFCs" [Link](https://www.rfc-editor.org/)
-
 "Socket Programming in C++" [Link](https://www.geeksforgeeks.org/cpp/socket-programming-in-cpp/)
-
 "Setting up a server using C++ sockets!" [Link](https://medium.com/@ahmadesekak/setting-up-a-server-using-c-sockets-124e404593c9)
-
 "Socket Address Structure" [Link](https://hyjae.gitbooks.io/socket-programming/content/)
 
 ## AI Resources
