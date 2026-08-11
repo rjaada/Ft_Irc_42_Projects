@@ -16,7 +16,7 @@ It’s always beneficial to understand these protocols.
 
 ### What is RFC?
 
-An RFC stands for "Request for Comments". It is a formal type of text document used first by computer engineers to propose, discuss, and build rules and standards for how the internet works. We are using the RFC1459 Internet Relay Chat Protocol as a reference for this project.
+A RFC stands for "Request for Comments". It is a formal type of text document used first by computer engineers to propose, discuss, and build rules and standards for how the internet works. We are using the RFC1459 Internet Relay Chat Protocol as a reference for this project.
 It can be found here: [Link](https://www.rfc-editor.org/info/rfc1459/)
 
 ### What is IRC?
