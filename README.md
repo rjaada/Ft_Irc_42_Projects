@@ -98,54 +98,76 @@ Use ctrl+D to send the command in several parts: ’com’, then ’man’, then
 
 ### Connecting to the server with the terminal
 
+![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step1.png)
+
+![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step2.png)
+
 ### Connecting to the server with the client
+
+![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step1.png)
+
+![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step2.png)
+
+![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step3.png)
 
 ## Commands
 
 ### PASS
+The PASS command is used to set a 'connection password'. The password can and must be set before any attempt to register the connection is made.
 ```
 PASS <password>
 ```
 ### NICK
+Is used to give user a nickname or change the previous one. If a NICK message arrives at a server which already knows about an identical nickname for another client, a nickname collision occurs.
 ```
 NICK <nickname>
 NICK <new_nickname> <nickname> 
 ```
 ### USER
+Is used at the beginning of connection to specify the username, hostname, servername and realname of the new user.
 ```
 USER <username> <hostname> <servername> :<realname>
 ```
 ### QUIT
+The server must close the connection to a client that used QUIT. 
 ```
 QUIT
 ```
 ### JOIN
+Is used by client to start listening a specific channel. Whether or not a client is allowed to join a channel is
+checked only by the server the client is connected to.
 ```
 JOIN <channel>
 JOIN <channel> <key>
 ```
 ### PART
+The PART message causes the client sending the message to be removed from the list of active users in a channel.
 ```
 PART <channel>
 ```
 ### INVITE
+Is used to invite users to a channel. The parameter <nickname> is the nickname of the person to be invited to the target channel <channel>.
 ```
 INVITE <nickname> <channel>
 ```
 ### KICK
+The KICK command can be used to forcibly remove a user from a channel. It 'kicks them out' of the channel (forced PART).
 ```
 KICK <channel> <user>
 ```
 ### TOPIC
+The TOPIC message is used to change or view the topic of a channel. The topic for channel <channel> is returned if there is no <topic> given. If the <topic> parameter is present, the topic for that channel will be changed, if the channel modes permit this action.
 ```
 TOPIC <channel>
 TOPIC <channel> :<new_topic>
 ```
 ### PRIVMSG
+Is used to send private messages between users. <receiver> is the nickname of the receiver of the message. <receiver> can also be a channel.
 ```
 PRIVMSG <receiver> :<message>
 ```
 ### MODE
+It allows both usernames and channels to have their mode changed. These commands are specific to channel operators.
 ```
 MODE <channel> (+/-)(i/t/k/o/l)
 
