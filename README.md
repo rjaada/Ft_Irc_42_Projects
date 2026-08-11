@@ -85,9 +85,9 @@ To register in the server, use the commands PASS, NICK and USER in this order:
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step1.png)
 
 
-To create or join a channel, use the command JOIN:
+To create or join a channel, use the command JOIN. Channel names should always start with '#'.
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step2.png)
-Channel names allways should start with '#'. User names starting with '@' are channel operators. 
+User names starting with '@' are channel operators.
 
 
 ### Connecting to the server with the client
@@ -185,23 +185,23 @@ MODE <channel> -l
 
 - Guides/tutorials/blogs about the project:
 
-"Small IRC Server [ft_irc 42 The Network]" by Ahmed Fatir [Link](https://medium.com/@afatir.ahmedfatir/small-irc-server-ft-irc-42-network-7cee848de6f9)
-"FT_IRC : Channels and Command Management" by Mohamed sarda [Link](https://medium.com/@mohamedsarda/ft-irc-channels-and-command-management-ff1ff3758a0b)
-"Sockets and Network Programming in C" by Mia Combeau [Link](https://www.codequoi.com/en/sockets-and-network-programming-in-c/)
-Useful ft_irc introduction guide by bhagenlo [Link](https://haglobah.github.io/Mastering-42/holy_graph/ft_irc.html)
-"Things to know" + some blogposts of the process (incomplete) [Link](https://ircgod.com/docs/irc/to_know/)
-"FT_IRC 42" YouTube playlist with useful videos [Link](https://www.youtube.com/playlist?list=PLHBVNH27RbWqGTL-AYMylWkNck45cxPnG)
-"Come on bro, let's recode on Discord" video by Nathan [Link](https://www.youtube.com/watch?v=hDLvHKEASRE)
+"Small IRC Server [ft_irc 42 The Network]" by Ahmed Fatir [Link](https://medium.com/@afatir.ahmedfatir/small-irc-server-ft-irc-42-network-7cee848de6f9) <br>
+"FT_IRC : Channels and Command Management" by Mohamed sarda [Link](https://medium.com/@mohamedsarda/ft-irc-channels-and-command-management-ff1ff3758a0b) <br>
+"Sockets and Network Programming in C" by Mia Combeau [Link](https://www.codequoi.com/en/sockets-and-network-programming-in-c/) <br>
+Useful ft_irc introduction guide by bhagenlo [Link](https://haglobah.github.io/Mastering-42/holy_graph/ft_irc.html) <br>
+"Things to know" + some blogposts of the process (incomplete) [Link](https://ircgod.com/docs/irc/to_know/) <br>
+"FT_IRC 42" YouTube playlist with useful videos [Link](https://www.youtube.com/playlist?list=PLHBVNH27RbWqGTL-AYMylWkNck45cxPnG) <br>
+"Come on bro, let's recode on Discord" video by Nathan [Link](https://www.youtube.com/watch?v=hDLvHKEASRE) <br>
 
 
 - Useful info:
 
-"What is a Socket?" [Link](https://www.tutorialspoint.com/unix_sockets/what_is_socket.htm)
-"Beej's Guide to Network Programming" [Link](https://beej.us/guide/bgnet/html/)
-"The official home of RFCs" [Link](https://www.rfc-editor.org/)
-"Socket Programming in C++" [Link](https://www.geeksforgeeks.org/cpp/socket-programming-in-cpp/)
-"Setting up a server using C++ sockets!" [Link](https://medium.com/@ahmadesekak/setting-up-a-server-using-c-sockets-124e404593c9)
-"Socket Address Structure" [Link](https://hyjae.gitbooks.io/socket-programming/content/)
+"What is a Socket?" [Link](https://www.tutorialspoint.com/unix_sockets/what_is_socket.htm) <br>
+"Beej's Guide to Network Programming" [Link](https://beej.us/guide/bgnet/html/) <br>
+"The official home of RFCs" [Link](https://www.rfc-editor.org/) <br>
+"Socket Programming in C++" [Link](https://www.geeksforgeeks.org/cpp/socket-programming-in-cpp/) <br>
+"Setting up a server using C++ sockets!" [Link](https://medium.com/@ahmadesekak/setting-up-a-server-using-c-sockets-124e404593c9) <br>
+"Socket Address Structure" [Link](https://hyjae.gitbooks.io/socket-programming/content/) <br>
 
 ## AI Resources
 
