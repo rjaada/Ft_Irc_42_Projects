@@ -94,9 +94,14 @@ To run the server
 ```
 
 ### Connecting to the server with the terminal
-
+In this example the port number is 6667 and password is "pass1", so we connect with:
+```
+nc -C 127.0.0.1 6667
+```
+To register in the server, use the commands PASS, NICK and USER in this order:
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step1.png)
 
+To create or join a channel, use the command JOIN:
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step2.png)
 
 ### Connecting to the server with the client
