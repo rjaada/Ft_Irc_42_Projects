@@ -14,16 +14,19 @@ It’s always beneficial to understand these protocols.
 
 ### What is RFC?
 
-RFC1459 Internet Relay Chat Protocol  [Link](https://www.rfc-editor.org/info/rfc1459/)
+An RFC stands for "Request for Comments". It is a formal type of text document used first by computer engineers to propose, discuss, and build rules and standards for how the internet works. We are using the RFC1459 Internet Relay Chat Protocol as a reference for this project.
+It can be found here: [Link](https://www.rfc-editor.org/info/rfc1459/)
 
 ### What is IRC?
 
-Internet Relay Chat or IRC is a text-based communication protocol on the Internet.
+Internet Relay Chat or IRC is a text-based communication protocol on the Internet. 
 It offers real-time messaging that can be either public or private. Users can exchange direct messages and join group channels.
 IRC clients connect to IRC servers in order to join channels. IRC servers are connected together to form a network.
 
 ## What is a server?
 
+In simple terms, a specialized computer or computer program that provides data, files, or services to other computers (called clients) over a network.
+"What is a Server? (Deepdive)" by LiveOverFlow [Link](https://www.youtube.com/watch?v=VXmvM2QtuMU)
 
 ### Project requirements
 
@@ -92,18 +95,19 @@ User names starting with '@' are channel operators.
 
 ### Connecting to the server with the client
 We are using Hexchat as the client. Open and go to Hexchat -> Network List. Add the new network name then click edit.
-![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step1.png)
+![hexchat](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step1.png)
 
 
 Change to localhost (127.0.0.1) and the port number (6667 in this example). Also fill in the password (pass1 in this example) and then close.
-![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step2.png)
+![hexchat](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step2.png)
 
 
 When back at the network list, select the server and click connect. You're now connected to the server.
-![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step3.png)
+![hexchat](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/client_connection_steps/step3.png)
 
 
 Commands are typed out differently here. For example JOIN is /join. Also, you don't need to use the command PRIVMSG for messaging, just use the different chat windows to send messages or commands to specific channels or users.
+![channel](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/channel/2.png)
 
 ## Commands
 
@@ -181,6 +185,7 @@ MODE <channel> -o <user>
 MODE <channel> +l <limit>
 MODE <channel> -l
 ```
+
 ## Resources
 
 - Guides/tutorials/blogs about the project:
