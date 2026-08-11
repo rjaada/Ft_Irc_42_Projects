@@ -94,7 +94,7 @@ To register in the server, use the commands PASS, NICK and USER in this order:
 
 To create or join a channel, use the command JOIN:
 ![terminal](https://github.com/rjaada/Ft_Irc_42_Projects/blob/main/imgs/terminal_connection_steps/step2.png)
-User names starting with '@' are channel operators. 
+Channel names allways should start with '#'. User names starting with '@' are channel operators. 
 
 
 ### Connecting to the server with the client
