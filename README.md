@@ -37,8 +37,6 @@ You must not implement server-to-server communication.
 - Several IRC clients exist. You have to choose one of them as a reference. Your reference client will be used during the evaluation process.
 - Your reference client must be able to connect to your server without encountering any error.
 - Communication between client and server has to be done via TCP/IP (v4 or v6).
-- Of course, you are expected to write a clean code.
-
 
 Using your reference client with your server must be similar to using it with any official IRC server. However, you only have to implement the following features:
 
@@ -47,15 +45,17 @@ Using your reference client with your server must be similar to using it with an
 - You must have operators and regular users.
 - Then, you have to implement the commands that are specific to channel operators:
 
-- KICK - Eject a client from the channel
-- INVITE - Invite a client to a channel
-- TOPIC - Change or view the channel topic
-- MODE - Change the channel’s mode:
-  - i: Set/remove Invite-only channel
-  - t: Set/remove the restrictions of the TOPIC command to channel operators
-  - k: Set/remove the channel key (password)
-  - o: Give/take channel operator privilege
-  - l: Set/remove the user limit to channel
+  - KICK - Eject a client from the channel
+  - INVITE - Invite a client to a channel
+  - TOPIC - Change or view the channel topic
+  - MODE - Change the channel’s mode:
+    - i: Set/remove Invite-only channel
+    - t: Set/remove the restrictions of the TOPIC command to channel operators
+    - k: Set/remove the channel key (password)
+    - o: Give/take channel operator privilege
+    - l: Set/remove the user limit to channel
+ 
+- Of course, you are expected to write a clean code.
 
 
 To ensure that your server correctly processes all data sent to it, the following simple test using nc can be performed:
