@@ -44,9 +44,9 @@ You must not implement server-to-server communication.
 
 Using your reference client with your server must be similar to using it with any official IRC server. However, you only have to implement the following features:
 
-- You must be able to authenticate, set a nickname, a username, join a channel, send and receive private messages using your reference client.
-- All the messages sent from one client to a channel have to be forwarded to every other client that joined the channel.
-- You must have operators and regular users.
+- You must be able to authenticate, set a nickname, a username, join a channel, send and receive private messages using your reference client. <br>
+- All the messages sent from one client to a channel have to be forwarded to every other client that joined the channel. <br>
+- You must have operators and regular users. <br>
 - Then, you have to implement the commands that are specific to channel operators:
 
   - KICK - Eject a client from the channel
