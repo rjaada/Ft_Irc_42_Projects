@@ -32,13 +32,6 @@ IRC clients connect to IRC servers in order to join channels. IRC servers are co
 You are required to develop an IRC server using the C++ 98 standard.
 You must not develop an IRC client.
 You must not implement server-to-server communication.
-Your executable will be run as follows:
-```
-./ircserv <port> <password>
-```
-- port: The port number on which your IRC server will be listening for incoming IRC connections.
-
-- password: The connection password. It will be needed by any IRC client that tries to connect to your server.
 
 - The server must be capable of handling multiple clients simultaneously without hanging.
 
@@ -95,6 +88,10 @@ Use ctrl+D to send the command in several parts: ’com’, then ’man’, then
 ## Instructions
 
 ### Running the server
+To run the server
+```
+./ircserv <port> <password>
+```
 
 ### Connecting to the server with the terminal
 
